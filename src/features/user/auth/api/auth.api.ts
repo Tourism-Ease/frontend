@@ -103,13 +103,17 @@ export async function resetPasswordApi(payload: ResetPasswordRequest): Promise<U
     throw formatError(err);
   }
 }
-
+export async function googleLogin({ token }: { token: string }) {
+  const { data } = await http.post("/auth/google-login", { token });
+  return data.data; // Should return User object
+}
 /**
  * Export grouped API methods
  */
 export const authAPI = {
   register: registerApi,
   login: loginApi,
+  googleLogin,
   logout: logoutApi,
   me: meApi,
   forgotPassword: forgotPasswordApi,
