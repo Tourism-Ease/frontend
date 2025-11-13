@@ -1,8 +1,15 @@
+import BestPackages from "../components/BestPackages";
+import Hero from "../components/Hero";
+import OurServices from "../components/OurServices";
+import PopularDestinations from "../components/PopularDestinations";
 
 export default function Home() {
   return (
     <>
-      <div className="min-h-screen bg-indigo-600">Home Page</div>
+      <Hero />
+      <OurServices />
+      <PopularDestinations />
+      <BestPackages />
     </>
   );
 }
