@@ -15,7 +15,7 @@ export default function AuthProvider({ children }: Props) {
 
   const fetchCurrentUser = useCallback(async () => {
     try {
-      const me = await authAPI.me();
+      const me = await authAPI.me() || null;
       setUser(me);
     } catch {
       setUser(null);
@@ -42,6 +42,7 @@ export default function AuthProvider({ children }: Props) {
     setUser((prev) => ({ ...prev, ...updated } as User));
     setUpdatedUser(updated);
   }, []);
+
 
   return (
     <AuthContext.Provider

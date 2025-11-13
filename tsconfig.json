@@ -9,7 +9,7 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "jsx": "react-jsx", // required for React
-    "moduleResolution": "bundler" // required for Vite sometimes
+    "jsx": "react-jsx",   
+    "moduleResolution": "bundler" 
   }
 }
