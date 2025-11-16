@@ -1,61 +1,22 @@
-import { GoogleLogin, type CredentialResponse } from "@react-oauth/google";
-import { toast } from "react-hot-toast";
-import { authAPI } from "../api/auth.api";
-import { useAuth } from "../../../../hooks/useAuth";
-import { useNavigate } from "react-router";
-import { useState } from "react";
-import { Spinner } from "../../../../components/ui/Spinner";
+import { Button } from "../../../../components/ui/Button";
 
-interface GoogleLoginButtonProps {
-  onSuccess?: () => void;
-}
-
-export default function GoogleLoginButton({ onSuccess }: GoogleLoginButtonProps) {
-  const { login } = useAuth();
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleGoogleLogin = async (response: CredentialResponse) => {
-    if (!response.credential) {
-      toast.error("Google login failed");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const user = await authAPI.googleLogin({ token: response.credential });
-      login(user);
-      toast.success(`Welcome back, ${user.firstName}!`);
-      
-      // Call success callback if provided
-      if (onSuccess) {
-        onSuccess();
-      }
-      
-      navigate("/");
-    } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : "Google login failed");
-    } finally {
-      setIsLoading(false);
-    }
+export default function GoogleLoginButton() {
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5050/api/v1/auth/google";
   };
 
-  if (isLoading) {
-    return (
-      <div className="w-full flex justify-center py-2">
-        <Spinner size="sm" />
-      </div>
-    );
-  }
-
   return (
-    <GoogleLogin
-      onSuccess={handleGoogleLogin}
-      onError={() => toast.error("Google login failed")}
-      width="100%"
-      theme="outline"
-      size="large"
-      text="continue_with"
-    />
+    <Button
+      onClick={handleGoogleLogin}
+      className="w-full flex items-center justify-center gap-2"
+      variant="outline"
+    >
+      <img
+        src="https://developers.google.com/identity/images/g-logo.png"
+        alt="Google"
+        className="w-5 h-5"
+      />
+      Continue with Google
+    </Button>
   );
 }

@@ -1,11 +1,10 @@
+import type { User } from '../../../context/AuthContext';
 
 /**
  * ---------------------------
  * 🔹 REQUEST PAYLOADS
  * ---------------------------
  */
-
-import type { User } from "../../../context/AuthContext";
 
 // ✅ Login
 export type LoginRequest = {
@@ -19,7 +18,12 @@ export type RegisterRequest = {
   lastName: string;
   email: string;
   password: string;
-  // passwordConfirm is handled on frontend only
+};
+
+// ✅ Verify Email
+export type VerifyEmailRequest = {
+  email: string;
+  verifyCode: string;
 };
 
 // ✅ Forgot Password
@@ -45,15 +49,12 @@ export type ResetPasswordRequest = {
  * ---------------------------
  */
 
-// ✅ Backend always returns `{ status, message, data? }`
+// ✅ Backend response format
 export type ApiSuccess<T = unknown> = {
   status: string;
   message?: string;
   data?: T;
 };
 
-// ✅ Standardized auth responses
-export type AuthResponse = ApiSuccess<{ firstName: string;lastName:string;role:'admin'|'user';id:string }>;
-
-// ✅ Forgot password / verify reset responses
-export type SimpleResponse = ApiSuccess<null>;
+// ✅ Auth response with user data
+export type AuthResponse = ApiSuccess<User>;

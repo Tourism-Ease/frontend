@@ -1,15 +1,14 @@
+// src/features/user/auth/hooks/useLogin.ts
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { authAPI } from "../api/auth.api";
 import { loginSchema, type LoginForm } from "../schemas/auth.schema";
-import { useNavigate } from "react-router";
-import { useAuth } from "../../../../hooks/useAuth";
 import { useCallback } from "react";
+import { useAuth } from "../../../../hooks/useAuth";
 
 export function useLogin(onSuccessCallback?: () => void) {
-  const navigate = useNavigate();
   const { login: loginContext } = useAuth();
 
   const form = useForm<LoginForm>({
@@ -22,20 +21,12 @@ export function useLogin(onSuccessCallback?: () => void) {
     mutationFn: (values: LoginForm) => authAPI.login(values),
     onSuccess: async (user) => {
       loginContext(user);
-      toast.success(`Welcome back, ${user.firstName}!`);
-      
-      // Call the success callback to close modal
-      if (onSuccessCallback) {
-        onSuccessCallback();
-      }
-      
-      navigate("/");
+      toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
+      if (onSuccessCallback) onSuccessCallback();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : "Login failed";
       toast.error(message);
-      
-      // Clear password field on error
       form.setValue("password", "");
     },
   });
@@ -48,6 +39,7 @@ export function useLogin(onSuccessCallback?: () => void) {
     form, 
     onSubmit, 
     isLoading: loginMutation.isPending, 
+    isSuccess: loginMutation.isSuccess,
     error: loginMutation.error 
   };
 }

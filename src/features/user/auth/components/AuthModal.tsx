@@ -1,238 +1,200 @@
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
-import { Button } from "../../../../components/ui/Button";
-import { Input } from "../../../../components/ui/input";
-import { Label } from "../../../../components/ui/label";
+// src/features/user/auth/components/AuthModal.tsx
+import { useState } from "react";
+import { X, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Dialog, DialogContent } from "@radix-ui/react-dialog";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLogin } from "../hooks/useLogin";
-import { useRegister } from "../hooks/useRegister";
-import GoogleLoginButton from "./GoogleLoginButton";
 import loginCover from "../../../../assets/images/login-cover.jpg";
 import registerCover from "../../../../assets/images/register-cover.jpg";
+import { useAuthModal } from "../hooks/useAuthModal";
+import { Button } from "../../../../components/ui/Button";
+import { Input } from "../../../../components/ui/input";
 import { Spinner } from "../../../../components/ui/Spinner";
+import GoogleLoginButton from "./GoogleLoginButton";
 
-type AuthModalProps = {
+interface AuthModalProps {
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  defaultView?: "login" | "register";
-};
+}
 
-export default function AuthModal({ 
-  isOpen, 
-  setIsOpen, 
-  defaultView = "login" 
-}: AuthModalProps) {
-  const [isLogin, setIsLogin] = useState(defaultView === "login");
+export default function AuthModal({ isOpen, setIsOpen }: AuthModalProps) {
+  const {
+    currentView,
+    loginHook,
+    registerHook,
+    isLoading,
+    email,
+    resetCode,
+    newPassword,
+    confirmPassword,
+    setEmail,
+    setResetCode,
+    setNewPassword,
+    setConfirmPassword,
+    handleForgotPassword,
+    handleVerifyCode,
+    handlePasswordReset,
+    handleEmailVerification,
+    goToLogin,
+    goToRegister,
+    goToForgotPassword,
+    closeModal,
+  } = useAuthModal({ defaultView: "login", onClose: () => setIsOpen(false) });
 
-  const loginHook = useLogin(setIsOpen);
-  const registerHook = useRegister(setIsOpen);
+  const [showPassword, setShowPassword] = useState(false);
+  const [emailVerificationCode, setEmailVerificationCode] = useState("");
 
-  const { form: loginForm, onSubmit: loginSubmit, isLoading: loginLoading } = loginHook;
-  const { register: loginRegister, handleSubmit: handleLoginSubmit, formState: { errors: loginErrors, isValid: isLoginValid } } = loginForm;
+  const isLogin = currentView === "login";
+  const isRegister = currentView === "register" && !registerHook.needsEmailVerification;
+  const isVerifyEmail = currentView === "register" && registerHook.needsEmailVerification;
+  const isForgot = currentView === "forgot-password";
+  const isVerifyReset = currentView === "verify-reset-code";
+  const isReset = currentView === "reset-password";
 
-  const { form: registerForm, onSubmit: registerSubmit, isLoading: registerLoading } = registerHook;
-  const { register: registerRegister, handleSubmit: handleRegisterSubmit, formState: { errors: registerErrors, isValid: isRegisterValid } } = registerForm;
-
-  // Reset forms when modal opens/closes or switches mode
-  useEffect(() => {
-    if (!isOpen) {
-      loginForm.reset();
-      registerForm.reset();
-    }
-  }, [isOpen, loginForm, registerForm]);
-
-  // Close modal on escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) setIsOpen(false);
-    };
-    if (isOpen) {
-      document.addEventListener("keydown", handleEscape);
-      return () => document.removeEventListener("keydown", handleEscape);
-    }
-  }, [isOpen, setIsOpen]);
-
-  const handleViewSwitch = (view: "login" | "register") => {
-    loginForm.reset();
-    registerForm.reset();
-    setIsLogin(view === "login");
-  };
-
-  const handleClose = () => {
-    if (!loginLoading && !registerLoading) setIsOpen(false);
-  };
-
-  if (!isOpen) return null;
+  function handleClose() {
+    setIsOpen(false);
+    closeModal();
+  }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-8">
-      <div
-        className="bg-white w-1/2 max-w-full h-[650px] rounded-xl shadow-2xl overflow-hidden relative flex flex-col md:flex-row"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <AnimatePresence mode="wait">
-          {isLogin ? (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
+      <DialogContent className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.98 }}
+          className={`w-full max-w-4xl h-auto max-h-[90vh] overflow-auto bg-white rounded-2xl shadow-xl flex flex-col md:flex-row ${
+            isForgot || isVerifyReset || isReset || isVerifyEmail ? "max-w-md mx-auto" : ""
+          }`}
+        >
+          {(isLogin || isRegister) && (
             <motion.div
-              key="loginLayout"
-              className="flex flex-col md:flex-row w-full h-full"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Image Left */}
-              <div className="hidden md:block md:w-1/2 h-auto">
-                <img
-                  src={loginCover}
-                  alt="Login Cover"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Login Form */}
-              <div className="w-full md:w-1/2 p-8 flex flex-col justify-center relative">
-                <button
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
-                  onClick={handleClose}
-                  disabled={loginLoading || registerLoading}
-                >
-                  <X size={24} />
-                </button>
-
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Welcome Back</h2>
-                  <p className="text-gray-600 mt-2">Sign in to your account</p>
-                </div>
-
-                <form onSubmit={handleLoginSubmit(loginSubmit)} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email" className="text-sm font-medium">Email Address</Label>
-                    <Input id="login-email" type="email" placeholder="Enter your email" {...loginRegister("email")} disabled={loginLoading} />
-                    {loginErrors.email && <span className="text-red-500 text-sm">{loginErrors.email.message}</span>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password" className="text-sm font-medium">Password</Label>
-                    <Input id="login-password" type="password" placeholder="Enter your password" {...loginRegister("password")} disabled={loginLoading} />
-                    {loginErrors.password && <span className="text-red-500 text-sm">{loginErrors.password.message}</span>}
-                  </div>
-
-                  <Button type="submit" className="w-full mt-2" disabled={loginLoading || !isLoginValid}>
-                    {loginLoading ? <div className="flex items-center justify-center gap-2"><Spinner size="sm" /> Signing in...</div> : "Sign In"}
-                  </Button>
-                </form>
-
-                <div className="flex items-center my-6">
-                  <hr className="flex-1 border-gray-300" />
-                  <span className="px-3 text-gray-500 text-sm">Or continue with</span>
-                  <hr className="flex-1 border-gray-300" />
-                </div>
-
-                <GoogleLoginButton onSuccess={() => setIsOpen(false)} />
-
-                <p className="mt-6 text-center text-sm text-gray-600">
-                  Don't have an account?{" "}
-                  <button
-                    type="button"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                    onClick={() => handleViewSwitch("register")}
-                    disabled={loginLoading || registerLoading}
-                  >
-                    Sign up
-                  </button>
-                </p>
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="registerLayout"
-              className="flex flex-col md:flex-row w-full h-full"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Register Form */}
-              <div className="w-full md:w-1/2 p-8 flex flex-col justify-center relative">
-                <button
-                  className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors"
-                  onClick={handleClose}
-                  disabled={loginLoading || registerLoading}
-                >
-                  <X size={24} />
-                </button>
-
-                <div className="text-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
-                  <p className="text-gray-600 mt-2">Join us today</p>
-                </div>
-
-                <form onSubmit={handleRegisterSubmit(registerSubmit)} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label htmlFor="register-firstName" className="text-sm font-medium">First Name</Label>
-                      <Input id="register-firstName" type="text" placeholder="First name" {...registerRegister("firstName")} disabled={registerLoading} />
-                      {registerErrors.firstName && <span className="text-red-500 text-sm">{registerErrors.firstName.message}</span>}
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="register-lastName" className="text-sm font-medium">Last Name</Label>
-                      <Input id="register-lastName" type="text" placeholder="Last name" {...registerRegister("lastName")} disabled={registerLoading} />
-                      {registerErrors.lastName && <span className="text-red-500 text-sm">{registerErrors.lastName.message}</span>}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="register-email" className="text-sm font-medium">Email Address</Label>
-                    <Input id="register-email" type="email" placeholder="Enter your email" {...registerRegister("email")} disabled={registerLoading} />
-                    {registerErrors.email && <span className="text-red-500 text-sm">{registerErrors.email.message}</span>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="register-password" className="text-sm font-medium">Password</Label>
-                    <Input id="register-password" type="password" placeholder="Create a password" {...registerRegister("password")} disabled={registerLoading} />
-                    {registerErrors.password && <span className="text-red-500 text-sm">{registerErrors.password.message}</span>}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="register-confirmPassword" className="text-sm font-medium">Confirm Password</Label>
-                    <Input id="register-confirmPassword" type="password" placeholder="Confirm your password" {...registerRegister("confirmPassword")} disabled={registerLoading} />
-                    {registerErrors.confirmPassword && <span className="text-red-500 text-sm">{registerErrors.confirmPassword.message}</span>}
-                  </div>
-
-                  <Button type="submit" className="w-full mt-2" disabled={registerLoading || !isRegisterValid}>
-                    {registerLoading ? <div className="flex items-center justify-center gap-2"><Spinner size="sm" /> Creating account...</div> : "Create Account"}
-                  </Button>
-                </form>
-
-                <div className="flex items-center my-6">
-                  <hr className="flex-1 border-gray-300" />
-                  <span className="px-3 text-gray-500 text-sm">Or continue with</span>
-                  <hr className="flex-1 border-gray-300" />
-                </div>
-
-                <GoogleLoginButton onSuccess={() => setIsOpen(false)} />
-
-                <p className="mt-6 text-center text-sm text-gray-600">
-                  Already have an account?{" "}
-                  <button
-                    type="button"
-                    className="text-blue-600 hover:text-blue-700 font-medium"
-                    onClick={() => handleViewSwitch("login")}
-                    disabled={loginLoading || registerLoading}
-                  >
-                    Sign in
-                  </button>
-                </p>
-              </div>
-
-              {/* Image Right */}
-              <div className="hidden md:block md:w-1/2 h-auto">
-                <img src={registerCover} alt="Register Cover" className="w-full h-full object-cover" />
-              </div>
-            </motion.div>
+              key={isLogin ? "left-login" : "left-register"}
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 50, opacity: 0 }}
+              className="hidden md:flex w-1/2 bg-cover bg-center rounded-l-2xl"
+              style={{ backgroundImage: `url(${isLogin ? loginCover : registerCover})` }}
+            />
           )}
-        </AnimatePresence>
-      </div>
-    </div>
+
+          <div className={`w-full ${isLogin || isRegister ? "md:w-1/2" : "md:w-full"} p-6 md:p-12 flex flex-col justify-center relative`}>
+            <Button variant="ghost" size="icon" onClick={handleClose} className="absolute top-4 right-4" disabled={isLoading}>
+              <X className="w-5 h-5" />
+            </Button>
+
+            <AnimatePresence mode="wait">
+              {/* LOGIN */}
+              {isLogin && (
+                <motion.div key="login" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Welcome Back</h2>
+                  <p className="text-sm text-muted-foreground">Sign in to your account</p>
+
+                  <form onSubmit={loginHook.form.handleSubmit(loginHook.onSubmit)} className="space-y-4">
+                    <div className="relative">
+                      <Input type="email" placeholder="Email" {...loginHook.form.register("email")} disabled={isLoading} className="pl-10" />
+                      <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    </div>
+
+                    <div className="relative">
+                      <Input type={showPassword ? "text" : "password"} placeholder="Password" {...loginHook.form.register("password")} disabled={isLoading} className="pl-10 pr-10" />
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                      <Button type="button" variant="ghost" size="icon" className="absolute right-2 top-1/2 -translate-y-1/2" onClick={() => setShowPassword(!showPassword)}>
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </Button>
+                    </div>
+
+                    <Button type="submit" className="w-full" disabled={isLoading}>{isLoading ? <Spinner size="sm" /> : "Sign In"}</Button>
+                  </form>
+
+                  <div className="text-center space-y-2">
+                    <Button variant="link" onClick={goToRegister} className="text-sm">Don't have an account? Register</Button>
+                    <Button variant="link" onClick={goToForgotPassword} className="text-sm">Forgot password?</Button>
+                  </div>
+
+                  <div className="text-center">
+                    <GoogleLoginButton/>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* REGISTER */}
+              {isRegister && (
+                <motion.div key="register" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Create Account</h2>
+                  <form onSubmit={registerHook.form.handleSubmit(registerHook.onSubmit)} className="space-y-4">
+                    <Input placeholder="First Name" {...registerHook.form.register("firstName")} disabled={isLoading} />
+                    <Input placeholder="Last Name" {...registerHook.form.register("lastName")} disabled={isLoading} />
+                    <Input type="email" placeholder="Email" {...registerHook.form.register("email")} disabled={isLoading} />
+                    <Input type="password" placeholder="Password" {...registerHook.form.register("password")} disabled={isLoading} />
+                    <Input type="password" placeholder="Confirm Password" {...registerHook.form.register("confirmPassword")} disabled={isLoading} />
+                    <Button type="submit" className="w-full" disabled={isLoading}>{isLoading ? <Spinner size="sm" /> : "Create Account"}</Button>
+                  </form>
+
+                  <div className="text-center space-y-2">
+                    <Button variant="link" onClick={goToLogin} className="text-sm">Already have an account? Sign in</Button>
+                  </div>
+
+                  <div className="text-center">
+                    <GoogleLoginButton/>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* VERIFY EMAIL (after register) */}
+              {isVerifyEmail && (
+                <motion.div key="verify-email" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Verify Your Email</h2>
+                  <p className="text-sm text-muted-foreground">Enter the 6-digit code we sent to your email.</p>
+
+                  <Input placeholder="6-digit code" value={emailVerificationCode} onChange={(e) => setEmailVerificationCode(e.target.value.replace(/\D/g, '').slice(0,6))} maxLength={6} disabled={isLoading} />
+                  <Button className="w-full" onClick={() => handleEmailVerification(emailVerificationCode)} disabled={isLoading || emailVerificationCode.length !== 6}>
+                    {isLoading ? <Spinner size="sm" /> : "Verify Email"}
+                  </Button>
+
+                  <div className="text-center">
+                    <Button variant="link" onClick={() => { registerHook.resetVerification(); goToRegister(); }} className="text-sm">Cancel</Button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* FORGOT / VERIFY RESET / RESET */}
+              {isForgot && (
+                <motion.div key="forgot-password" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Forgot Password</h2>
+                  <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={isLoading} />
+                  <Button className="w-full" onClick={handleForgotPassword} disabled={isLoading}>{isLoading ? <Spinner size="sm" /> : "Send Verification Code"}</Button>
+                  <div className="text-center">
+                    <Button variant="link" onClick={goToLogin} className="text-sm">Back to login</Button>
+                  </div>
+                </motion.div>
+              )}
+
+              {isVerifyReset && (
+                <motion.div key="verify-reset" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Verify Code</h2>
+                  <Input placeholder="6-digit code" value={resetCode} onChange={(e) => setResetCode(e.target.value.replace(/\D/g, '').slice(0,6))} disabled={isLoading} />
+                  <Button className="w-full" onClick={handleVerifyCode} disabled={isLoading || resetCode.length !== 6}>{isLoading ? <Spinner size="sm" /> : "Verify Code"}</Button>
+                  <div className="text-center">
+                    <Button variant="link" onClick={goToForgotPassword} className="text-sm">Back</Button>
+                  </div>
+                </motion.div>
+              )}
+
+              {isReset && (
+                <motion.div key="reset-password" initial={{ x: 50, opacity: 0 }} animate={{ x: 0, opacity: 1 }} exit={{ x: -50, opacity: 0 }} className="space-y-6">
+                  <h2 className="text-2xl font-bold">Reset Password</h2>
+                  <Input type="password" placeholder="New Password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} disabled={isLoading} />
+                  <Input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} disabled={isLoading} />
+                  <Button className="w-full" onClick={handlePasswordReset} disabled={isLoading}>{isLoading ? <Spinner size="sm" /> : "Reset Password"}</Button>
+                  <div className="text-center">
+                    <Button variant="link" onClick={goToLogin} className="text-sm">Back to login</Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      </DialogContent>
+    </Dialog>
   );
 }

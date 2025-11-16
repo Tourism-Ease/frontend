@@ -1,18 +1,20 @@
-import { Navigate } from "react-router";
-import { USER_ROUTES } from "../constants/routes";
-import { useAuth } from "../hooks/useAuth";
+import { Navigate } from 'react-router';
+import { Spinner } from '../components/ui/Spinner';
+import { useAuth } from '../hooks/useAuth';
 
-type Props = { children: React.ReactNode };
-
-export default function GuestOnly({ children }: Props) {
+export default function GuestOnly({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
   if (isAuthenticated) {
-    return <Navigate to={USER_ROUTES.ROOT} replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;

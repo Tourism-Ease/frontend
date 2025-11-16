@@ -23,8 +23,6 @@ export type User = {
   profileImageUrl?: string;
   role: 'user' | 'admin';
   active: boolean;
-  wishlist: string[];
-  addresses: UserAddress[];
   createdAt?: string;
   updatedAt?: string;
 };
