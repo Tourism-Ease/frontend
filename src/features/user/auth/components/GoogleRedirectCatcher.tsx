@@ -1,4 +1,3 @@
-// src/pages/auth/GoogleRedirectCatcher.tsx
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 

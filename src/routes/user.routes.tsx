@@ -3,6 +3,9 @@ import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
 import UserLayout from "../layouts/user/UserLayout";
 import Home from "../features/user/home/pages/Home";
+import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
+import GoogleCallbackHandler from "../features/user/auth/components/GoogleCallbackHandler";
+import GoogleRedirectCatcher from "../features/user/auth/components/GoogleRedirectCatcher";
 
 
 // === Placeholder components (replace later) ===
@@ -17,7 +20,6 @@ const ForgotPassword = () => <div>Forgot Password</div>;
 const VerifyResetCode = () => <div>Verify Reset Code</div>;
 const ResetPassword = () => <div>Reset Password</div>;
 
-const Profile = () => <div>User Profile</div>;
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
 const Payments = () => <div>Payments</div>;
@@ -59,12 +61,15 @@ export const userRoutes = (
         path={PUBLIC_ROUTES.RESET_PASSWORD.replace("/", "")}
         element={<ResetPassword />}
       />
-      {/* Google OAuth error handling */}
+      {/* Google OAuth */}
+      <Route path={PUBLIC_ROUTES.GOOGLE_CALLBACK.replace("/", "")} element={<GoogleCallbackHandler />} />
+      <Route path="/auth/google/redirect" element={<GoogleRedirectCatcher />} />
+      <Route path="/api/v1/auth/google/callback" element={<GoogleRedirectCatcher />} />
       <Route path="/auth/error" element={<div>Google authentication failed. Please try again.</div>} />
       {/* User Routes */}
       <Route
         path={USER_ROUTES.PROFILE.replace("/", "")}
-        element={<Profile />}
+        element={<ProfileDashboard />}
       />
       <Route
         path={USER_ROUTES.BOOKINGS.replace("/", "")}
