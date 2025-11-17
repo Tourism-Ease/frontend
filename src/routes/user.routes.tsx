@@ -5,7 +5,6 @@ import UserLayout from "../layouts/user/UserLayout";
 import Home from "../features/user/home/pages/Home";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import GoogleCallbackHandler from "../features/user/auth/components/GoogleCallbackHandler";
-import GoogleRedirectCatcher from "../features/user/auth/components/GoogleRedirectCatcher";
 
 
 // === Placeholder components (replace later) ===
@@ -62,9 +61,7 @@ export const userRoutes = (
         element={<ResetPassword />}
       />
       {/* Google OAuth */}
-      <Route path={PUBLIC_ROUTES.GOOGLE_CALLBACK.replace("/", "")} element={<GoogleCallbackHandler />} />
-      <Route path="/auth/google/redirect" element={<GoogleRedirectCatcher />} />
-      <Route path="/api/v1/auth/google/callback" element={<GoogleRedirectCatcher />} />
+      <Route path={'/auth/success'} element={<GoogleCallbackHandler />} />
       <Route path="/auth/error" element={<div>Google authentication failed. Please try again.</div>} />
       {/* User Routes */}
       <Route

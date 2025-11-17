@@ -12,7 +12,6 @@ export const PUBLIC_ROUTES = {
   FORGOT_PASSWORD: '/forgot-password',
   VERIFY_RESET_CODE: '/verify-reset-code',
   RESET_PASSWORD: '/reset-password',
-  GOOGLE_CALLBACK: '/auth/google/callback',
 } as const;
 
 // =====================

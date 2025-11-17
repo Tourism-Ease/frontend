@@ -58,6 +58,7 @@ export function useAuthModal({
           toast.success("Reset code sent to your email");
           setCurrentView("verify-reset-code");
         },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err: any) => {
           const message =
             err instanceof Error ? err.message : "Failed to send reset code";
