@@ -5,6 +5,7 @@ import UserLayout from "../layouts/user/UserLayout";
 import Home from "../features/user/home/pages/Home";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import GoogleCallbackHandler from "../features/user/auth/components/GoogleCallbackHandler";
+import ProtectedRoute from "../auth/UserProtected";
 
 
 // === Placeholder components (replace later) ===
@@ -13,11 +14,6 @@ const Contact = () => <div>Contact</div>;
 const Trips = () => <div>Trips List</div>;
 const TripDetails = () => <div>Trip Details</div>;
 
-const Login = () => <div>Login</div>;
-const Register = () => <div>Register</div>;
-const ForgotPassword = () => <div>Forgot Password</div>;
-const VerifyResetCode = () => <div>Verify Reset Code</div>;
-const ResetPassword = () => <div>Reset Password</div>;
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -43,30 +39,21 @@ export const userRoutes = (
       />
 
       {/* Auth Routes */}
-      <Route path={PUBLIC_ROUTES.LOGIN.replace("/", "")} element={<Login />} />
+      <Route path={"/auth/success"} element={<GoogleCallbackHandler />} />
       <Route
-        path={PUBLIC_ROUTES.REGISTER.replace("/", "")}
-        element={<Register />}
+        path="/auth/error"
+        element={<div>Google authentication failed. Please try again.</div>}
       />
-      <Route
-        path={PUBLIC_ROUTES.FORGOT_PASSWORD.replace("/", "")}
-        element={<ForgotPassword />}
-      />
-      <Route
-        path={PUBLIC_ROUTES.VERIFY_RESET_CODE.replace("/", "")}
-        element={<VerifyResetCode />}
-      />
-      <Route
-        path={PUBLIC_ROUTES.RESET_PASSWORD.replace("/", "")}
-        element={<ResetPassword />}
-      />
-      {/* Google OAuth */}
-      <Route path={'/auth/success'} element={<GoogleCallbackHandler />} />
-      <Route path="/auth/error" element={<div>Google authentication failed. Please try again.</div>} />
+
       {/* User Routes */}
+
       <Route
         path={USER_ROUTES.PROFILE.replace("/", "")}
-        element={<ProfileDashboard />}
+        element={
+          <ProtectedRoute requiredRole="user">
+            <ProfileDashboard />
+          </ProtectedRoute>
+        }
       />
       <Route
         path={USER_ROUTES.BOOKINGS.replace("/", "")}

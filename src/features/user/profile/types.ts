@@ -9,6 +9,7 @@ export interface UserProfile {
   email: string;
   phone: string;
   avatar: string | null;
+  avatarUrl: string | null;
   createdAt: string;
 }
 
@@ -20,7 +21,7 @@ export interface UpdateProfileInput {
   lastName: string;
   email: string;
   phone: string;
-  profileImage: File | null;
+  avatar: File | null;
 }
 
 // ==========================

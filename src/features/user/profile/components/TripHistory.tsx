@@ -12,7 +12,11 @@ export default function TripHistory() {
   return (
     <div className="space-y-4">
       {tripsData.trips.map((trip) => (
-        <Card key={trip.id}>
+        <Card
+          key={trip.id}
+          className="cursor-pointer hover:shadow-md transition-shadow duration-200"
+          onClick={() => console.log(`Clicked trip ${trip.id}`)} // Replace with your action
+        >
           <CardHeader>
             <CardTitle className="text-lg">{trip.destination}</CardTitle>
           </CardHeader>
