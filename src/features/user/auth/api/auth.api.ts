@@ -8,6 +8,7 @@ import type {
   ResetPasswordRequest,
   AuthResponse,
   ApiSuccess,
+  ReactivatePayload,
 } from "../types";
 
 http.defaults.withCredentials = true;
@@ -172,6 +173,23 @@ export async function handleGoogleCallback(): Promise<User> {
   }
 }
 
+
+// ✅ Reactivate account
+export async function reactivateAccountApi(payload: ReactivatePayload): Promise<{ user: User; token?: string }> {
+  try {
+    const { data } = await http.post<AuthResponse>("/users/activateAccount", payload);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return { user: data.data, token: (data as any).token };
+    /**
+     * Type 'User | undefined' is not assignable to type 'User'.
+  Type 'undefined' is not assignable to type 'User'.ts(2322)
+auth.api.ts(178, 83): The expected type comes from property 'user' which is declared here on type '{ user: User; token?: string | undefined; }'
+     */
+  } catch (err) {
+    throw formatError(err);
+  }
+}
+
 export const authAPI = {
   register: registerApi,
   verifyEmail: verifyEmailApi,
@@ -179,6 +197,7 @@ export const authAPI = {
   googleLogin,
   logout: logoutApi,
   me: meApi,
+  reactivateAccount: reactivateAccountApi,
   forgotPassword: forgotPasswordApi,
   verifyResetCode: verifyResetCodeApi,
   resetPassword: resetPasswordApi,

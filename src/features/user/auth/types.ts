@@ -6,8 +6,6 @@ import type { User } from '../../../context/AuthContext';
  * ---------------------------
  */
 
-import type { User } from "../../../context/AuthContext";
-
 // ✅ Login
 export type LoginRequest = {
   email: string;
@@ -60,3 +58,14 @@ export type ApiSuccess<T = unknown> = {
 
 // ✅ Auth response with user data
 export type AuthResponse = ApiSuccess<User>;
+
+
+export interface ReactivatePayload {
+  email: string;
+  password: string;
+}
+
+export type ReactivationState = {
+  isOpen: boolean;
+  userEmail: string;
+};

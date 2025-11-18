@@ -8,8 +8,10 @@ import ContactPage from '../features/user/contact/pages/ContactPage'
 import Trips from '../features/user/trips/pages/Trips'
 import TripDetails from './../features/user/trips/pages/TripDetails';
 import HotelDetails from "../features/user/Hotel/components/HotelDetails";
+import GoogleCallbackHandler from '../features/user/auth/components/GoogleCallbackHandler'
+import ProfileDashboard from '../features/user/profile/pages/ProfileDashboard'
+import ProtectedRoute from '../auth/UserProtected'
         
-const Profile = () => <div>User Profile</div>
 const Bookings = () => <div>My Bookings</div>
 const BookingDetails = () => <div>Booking Details</div>
 const Payments = () => <div>Payments</div>

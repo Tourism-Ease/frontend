@@ -19,8 +19,8 @@ export type User = {
   lastName: string;
   email: string;
   phone?: string;
-  profileImage?: string;
-  profileImageUrl?: string;
+  avatar?: string;
+  avatarUrl?: string;
   role: 'user' | 'admin';
   active: boolean;
   createdAt?: string;

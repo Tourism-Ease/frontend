@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation } from "react-router";
-import { Menu, X, Plane, User, LogOut } from "lucide-react";
+import { X, Plane, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -111,10 +110,10 @@ export default function UserNavbar() {
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                   location.pathname === link.path
-                    ? "bg-[#00B6DE] text-white shadow-sm" 
+                    ? "bg-[#00B6DE] text-white shadow-sm"
                     : isTransparent
-                    ? "text-white hover:bg-white/10" 
-                    : "text-gray-700 hover:bg-gray-100" 
+                    ? "text-white hover:bg-white/10"
+                    : "text-gray-700 hover:bg-gray-100"
                 )}
               >
                 {link.name}
@@ -127,23 +126,43 @@ export default function UserNavbar() {
             {isAuthenticated && user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <div className="cursor-pointer w-10 h-10 rounded-full overflow-hidden border-2 border-gray-300 hover:border-blue-500 transition-all duration-200">
-                    <Avatar>
-                      <AvatarImage
-                        src={user.profileImageUrl || "/user-avatar.png"}
-                        alt={user.firstName}
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                      <AvatarFallback className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-700 text-sm font-semibold rounded-full">
-                        {user.firstName[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
+                  {user.avatarUrl ? (
+                    /* === REAL PROFILE IMAGE === */
+                    <img
+                      src={user.avatarUrl}
+                      alt="Profile"
+                      className="
+              w-10 h-10 rounded-full object-cover cursor-pointer
+              border-2 border-gray-300 hover:border-blue-500
+              transition-all duration-200 select-none shrink-0
+            "
+                    />
+                  ) : (
+                    /* === FALLBACK WITH INITIALS === */
+                    <div
+                      className="
+              w-10 h-10 rounded-full cursor-pointer shrink-0
+              bg-gray-300 text-gray-700
+              flex items-center justify-center
+              text-sm font-bold uppercase
+              border-2 border-gray-300 hover:border-blue-500
+              transition-all duration-200
+            "
+                    >
+                      {user.firstName.slice(0, 2).toUpperCase()}
+                    </div>
+                  )}
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
                   align="end"
-                  className="w-48 bg-white dark:bg-gray-800 shadow-md rounded-md border border-gray-200 dark:border-gray-700 p-2"
+                  sideOffset={10}
+                  className="
+          w-48 bg-white dark:bg-gray-800 shadow-md rounded-md 
+          border border-gray-200 dark:border-gray-700 p-2
+          animate-in fade-in-0 zoom-in-95
+          animate-out fade-out-0 zoom-out-95
+        "
                 >
                   <DropdownMenuLabel className="text-sm font-semibold text-gray-700 dark:text-gray-200 px-2 py-1">
                     {user.firstName} {user.lastName}
@@ -151,49 +170,28 @@ export default function UserNavbar() {
 
                   <DropdownMenuSeparator className="my-1" />
 
-                  <DropdownMenuItem
-                    asChild
-                    className="flex items-center gap-2 text-gray-700 dark:text-gray-200 rounded-md px-2 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  >
-                    <Link to="/profile">
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/profile"
+                      className="flex items-center gap-2 px-2 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    >
                       <User className="h-4 w-4" /> Profile
                     </Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
                     onClick={logout}
-                    className="flex items-center gap-2 text-red-600 rounded-md px-2 py-2 hover:bg-red-50 dark:hover:bg-red-900"
+                    className="flex items-center gap-2 px-2 py-2 rounded-md text-red-600 hover:bg-red-50 dark:hover:bg-red-900"
                   >
                     <LogOut className="h-4 w-4" /> Logout
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button size="sm" onClick={() => setAuthOpen(true)}>
+              <Button className="cursor-pointer" size="sm" onClick={() => setAuthOpen(true)}>
                 Login
               </Button>
             )}
-
-            {/* Mobile menu toggle with animation */}
-            <Button
-              ref={toggleRef}
-              variant="ghost"
-              size="icon"
-              className="md:hidden cursor-pointer"
-              onClick={() => setMobileOpen(!mobileOpen)}
-            >
-              <motion.div
-                initial={{ rotate: 0 }}
-                animate={{ rotate: mobileOpen ? 90 : 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                {mobileOpen ? (
-                  <X className="h-6 w-6 " />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
-              </motion.div>
-            </Button>
           </div>
         </div>
 
@@ -221,7 +219,7 @@ export default function UserNavbar() {
               {/* Close Button */}
               <button
                 onClick={() => setMobileOpen(false)}
-                className="absolute top-[10px] right-18 z-50 p-2 cursor-pointer"
+                className="absolute top-2.5 right-18 z-50 p-2 cursor-pointer"
               >
                 <X className="h-6 w-6 text-gray-700" />
               </button>

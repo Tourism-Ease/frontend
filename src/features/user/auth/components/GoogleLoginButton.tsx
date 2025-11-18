@@ -8,7 +8,7 @@ export default function GoogleLoginButton() {
   return (
     <Button
       onClick={handleGoogleLogin}
-      className="w-full flex items-center justify-center gap-2"
+      className="w-full flex items-center justify-center gap-2 cursor-pointer"
       variant="outline"
     >
       <img
