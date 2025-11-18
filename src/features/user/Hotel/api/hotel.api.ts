@@ -10,14 +10,7 @@ export interface Location {
   coordinates: number[];
 }
 
-export interface Room {
-  _id: string;
-  name: string;
-  price: number;
-  capacity: number;
-  amenities: string[];
-  createdAt: string;
-}
+
 
 export interface Hotel {
   id: string;
@@ -30,7 +23,6 @@ export interface Hotel {
   imageCoverUrl: string;
   imagesUrls: string[];
   location: Location;
-  rooms?: Room[];
 }
 
 export const getHotelById = async (id: string): Promise<Hotel> => {

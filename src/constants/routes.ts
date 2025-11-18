@@ -9,6 +9,7 @@ export const PUBLIC_ROUTES = {
   TRIPS: "/trips",
   TRIP_DETAILS: "/trips/:id",
   HOTEL_DETAILS: "/HotelDetails/:id",
+  PACKAGE: "/packages",
   LOGIN: "/login",
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",

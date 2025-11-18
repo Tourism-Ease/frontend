@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 interface HotelImagesProps {
   cover: string;
   images: string[];
@@ -49,8 +48,7 @@ export default function HotelImages({ cover, images }: HotelImagesProps) {
   return (
     <>
       {/* GALLERY GRID */}
-      <div className="grid grid-cols-4 grid-rows-2 gap-2 md:gap-3 rounded-xl overflow-hidden">
-        {/* Main big image */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 grid-rows-2 gap-2 md:gap-3 rounded-xl overflow-hidden mb-6">
         <div
           className="col-span-4 md:col-span-2 row-span-2 relative cursor-pointer"
           onClick={() => openModal(0)}
@@ -70,13 +68,13 @@ export default function HotelImages({ cover, images }: HotelImagesProps) {
           >
             <img
               src={img}
-              className="w-full h-[120px] md:h-[205px] object-cover rounded-xl"
+              className="w-full h-[120px] hidden lg:flex md:h-[205px] object-cover rounded-xl"
             />
 
             {/* "Show all photos" on last image */}
-            {i === gallery.slice(1).length - 1 && (
-              <button className="cursor-pointer absolute bottom-2 right-2 bg-white px-3 py-1 rounded-lg shadow text-sm md:text-base">
-                Show all photos
+            {i === gallery.length - 2 && (
+              <button className="absolute bottom-3 md:bottom-8 lg:bottom-2 right-2 bg-white px-3 py-1.5 w-40 rounded-lg text-sm font-semibold uppercase cursor-pointer hover:bg-gray-300 transition">
+                show more
               </button>
             )}
           </div>
@@ -86,18 +84,18 @@ export default function HotelImages({ cover, images }: HotelImagesProps) {
       {/* MODAL */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center"
+          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center"
           onClick={(e) => e.target === e.currentTarget && closeModal()}
         >
           <div className="relative w-full max-w-5xl p-4">
             <img
               src={allImages[currentIndex]}
-              className="w-full max-h-[80vh] object-contain rounded-lg"
+              className="w-2/3 mx-auto lg:w-full max-h-[80vh] object-contain rounded-lg"
             />
 
             {/* Close */}
             <button
-              className="absolute top-4 right-4 text-white text-3xl font-bold"
+              className="absolute -top-8 right-4 text-white text-3xl font-bold hover:text-gray-300 transition cursor-pointer"
               onClick={closeModal}
             >
               ✕
@@ -105,7 +103,7 @@ export default function HotelImages({ cover, images }: HotelImagesProps) {
 
             {/* Prev */}
             <button
-              className="absolute top-1/2 left-4 -translate-y-1/2 text-white text-4xl font-bold"
+              className="absolute top-1/2 left-4 -translate-y-1/2 text-white text-4xl font-bold hover:text-gray-300 transition cursor-pointer"
               onClick={prevImage}
             >
               ❮
@@ -113,7 +111,7 @@ export default function HotelImages({ cover, images }: HotelImagesProps) {
 
             {/* Next */}
             <button
-              className="absolute top-1/2 right-4 -translate-y-1/2 text-white text-4xl font-bold"
+              className="absolute top-1/2 right-4 -translate-y-1/2 text-white text-4xl font-bold hover:text-gray-300 transition cursor-pointer"
               onClick={nextImage}
             >
               ❯

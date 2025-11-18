@@ -1,7 +1,7 @@
 import sharm from "@/assets/sharm.jpeg";
 import luxur from "@/assets/luxur.jpg";
 import Hurghda from "@/assets/Hurghada.webp";
-import sharm2 from "@/assets/sharm.jpeg";
+import Dahab from "@/assets/Dahab.jpg";
 import { motion } from "framer-motion";
 import { useState } from "react";
 export default function PopularDestinations() {
@@ -33,8 +33,8 @@ export default function PopularDestinations() {
       rating: "Very Good",
     },
     {
-      img: sharm2,
-      name: "sharm",
+      img: Dahab,
+      name: "Dahab",
       description: "Good Place",
       rating: "Very Good",
     },

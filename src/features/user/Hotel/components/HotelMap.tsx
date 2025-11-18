@@ -17,12 +17,12 @@ export default function HotelMap({ latitude, longitude, name }: HotelMapProps) {
   });
 
   return (
-    <div className="mt-10 mx-auto w-2/3 h-[350px] rounded-xl overflow-hidden shadow">
+    <div className="mt-10 mx-auto w-2/3 h-[350px] rounded-xl overflow-hidden shadow ">
       <MapContainer
         center={position}
         zoom={13}
         scrollWheelZoom={false}
-        className="w-4x1 h-full"
+        className="w-4x1 h-full position-absolute"
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 

@@ -19,7 +19,7 @@ import AuthModal from "../../../features/user/auth/components/AuthModal";
 const navLinks = [
   { name: "Trips", path: "/trips" },
   { name: "About", path: "/about" },
-  { name: "Packages", path: "/Packages" },
+  { name: "Packages", path: "/packages" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -111,10 +111,10 @@ export default function UserNavbar() {
                 className={cn(
                   "px-4 py-2 rounded-md text-sm font-medium transition-all duration-200",
                   location.pathname === link.path
-                    ? "bg-[#00B6DE] text-white shadow-sm" 
+                    ? "bg-[#00B6DE] text-white shadow-sm"
                     : isTransparent
-                    ? "text-white hover:bg-white/10" 
-                    : "text-gray-700 hover:bg-gray-100" 
+                    ? "text-white hover:bg-white/10"
+                    : "text-gray-700 hover:bg-gray-100"
                 )}
               >
                 {link.name}
