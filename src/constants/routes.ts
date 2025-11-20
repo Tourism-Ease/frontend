@@ -57,6 +57,8 @@ export const ADMIN_ROUTES = {
   EDIT_TRIP: (id: string = ':id') => `/admin/trips/edit/${id}`,
 
   USERS: '/admin/users',
+  ADD_USER: '/admin/users/add',
+  EDIT_USER: (id: string = ':id') => `/admin/users/edit/${id}`,
   BOOKINGS: '/admin/bookings',
   REPORTS: '/admin/reports',
   SETTINGS: '/admin/settings',
