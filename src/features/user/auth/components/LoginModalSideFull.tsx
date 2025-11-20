@@ -1,6 +1,6 @@
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { X } from "lucide-react";
-import { Button } from "../../../../components/ui/Button";
+import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { useLogin } from "../hooks/useLogin";
 import GoogleLoginButton from "./GoogleLoginButton";

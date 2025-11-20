@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuItem,
 } from "@radix-ui/react-dropdown-menu";
-import { Button } from "../../../components/ui/Button";
+import { Button } from "../../../components/ui/button";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
 import AuthModal from "../../../features/user/auth/components/AuthModal";

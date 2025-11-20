@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useChangePassword } from "../hooks/useProfile";
 import type { ChangePasswordInput } from "../types";
-import { Button } from "../../../../components/ui/Button";
+import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
 import { Label } from "../../../../components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";
