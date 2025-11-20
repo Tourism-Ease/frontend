@@ -3,17 +3,18 @@
 
 // =====================
 export const PUBLIC_ROUTES = {
-  HOME: '/',
-  ABOUT: '/about',
-  CONTACT: '/contact',
-  TRIPS: '/trips',
-  TRIP_DETAILS: '/trips/:id',
-  HOTEL_DETAILS: '/HotelDetails/:id',
-  LOGIN: '/login',
-  REGISTER: '/register',
-  FORGOT_PASSWORD: '/forgot-password',
-  VERIFY_RESET_CODE: '/verify-reset-code',
-  RESET_PASSWORD: '/reset-password',
+  HOME: "/",
+  ABOUT: "/about",
+  CONTACT: "/contact",
+  TRIPS: "/trips",
+  TRIP_DETAILS: "/trips/:id",
+  HOTEL_DETAILS: "/HotelDetails/:id",
+  PACKAGE: "/packages",
+  LOGIN: "/login",
+  REGISTER: "/register",
+  FORGOT_PASSWORD: "/forgot-password",
+  VERIFY_RESET_CODE: "/verify-reset-code",
+  RESET_PASSWORD: "/reset-password",
 } as const;
 
 // =====================

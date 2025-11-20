@@ -6,7 +6,7 @@ import { contactCards, contactPageData } from '../data/contactData';
 
 export default function ContactPage() {
     return (
-        <div className="min-h-screen bg-[#FBFCFD]">
+        <div className="min-h-screen bg-[#FBFCFD] mt-10">
             <motion.section
                 className="relative bg-linear-to-r from-cyan-500 to-blue-500 py-20 text-white overflow-hidden"
                 initial={{ opacity: 0, y: -50 }}

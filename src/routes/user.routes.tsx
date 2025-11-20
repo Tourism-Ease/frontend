@@ -1,18 +1,17 @@
 /* eslint-disable react-refresh/only-export-components */
-import { Route } from 'react-router';
-import { PUBLIC_ROUTES, USER_ROUTES } from '../constants/routes';
-import UserLayout from '../layouts/user/UserLayout';
-import Home from '../features/user/home/pages/Home';
-import HotelDetails from '../features/user/Hotel/components/HotelDetails';
-import GoogleCallbackHandler from '../features/user/auth/components/GoogleCallbackHandler';
-import ProtectedRoute from '../auth/UserProtected';
-import ProfileDashboard from '../features/user/profile/pages/ProfileDashboard';
-
-// === Placeholder components (replace later) ===
-const About = () => <div>About</div>;
-const Contact = () => <div>Contact</div>;
-const Trips = () => <div>Trips List</div>;
-const TripDetails = () => <div>Trip Details</div>;
+import { Route } from "react-router";
+import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
+import UserLayout from "../layouts/user/UserLayout";
+import Home from "../features/user/home/pages/Home";
+import AboutPage from "../features/user/about/pages/AboutPage";
+import ContactPage from "../features/user/contact/pages/ContactPage";
+import Trips from "../features/user/trips/pages/Trips";
+import TripDetails from "./../features/user/trips/pages/TripDetails";
+import HotelDetails from "../features/user/Hotel/components/HotelDetails";
+import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
+import ProtectedRoute from "./../auth/UserProtected";
+import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
+import PackagesPage from "../features/user/Packages/Pages/PackagePage";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -26,10 +25,13 @@ export const userRoutes = (
     <Route path={PUBLIC_ROUTES.HOME} element={<UserLayout />}>
       {/* Public Routes */}
       <Route index element={<Home />} />
-      <Route path={PUBLIC_ROUTES.ABOUT.replace('/', '')} element={<About />} />
       <Route
-        path={PUBLIC_ROUTES.CONTACT.replace('/', '')}
-        element={<Contact />}
+        path={PUBLIC_ROUTES.ABOUT.replace("/", "")}
+        element={<AboutPage />}
+      />
+      <Route
+        path={PUBLIC_ROUTES.CONTACT.replace("/", "")}
+        element={<ContactPage />}
       />
       <Route path={PUBLIC_ROUTES.TRIPS.replace('/', '')} element={<Trips />} />
       <Route
@@ -37,7 +39,11 @@ export const userRoutes = (
         element={<TripDetails />}
       />
       <Route
-        path={PUBLIC_ROUTES.HOTEL_DETAILS.replace('/', '')}
+        path={PUBLIC_ROUTES.PACKAGE.replace("/", "")}
+        element={<PackagesPage />}
+      />
+      <Route
+        path={PUBLIC_ROUTES.HOTEL_DETAILS.replace("/", "")}
         element={<HotelDetails />}
       />
 

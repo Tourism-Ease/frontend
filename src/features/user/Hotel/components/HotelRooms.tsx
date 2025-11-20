@@ -1,30 +1,54 @@
-import type { Room } from "../api/hotel.api";
+import type { Room } from "../api/room.api";
 
 interface HotelRoomsProps {
   rooms: Room[];
 }
+
 export default function HotelRooms({ rooms }: HotelRoomsProps) {
   if (!rooms || rooms.length === 0) return null;
 
   return (
-    <div className="mt-8">
-      <h2 className="text-2xl font-semibold mb-3">Available Rooms</h2>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="mt-12">
+      <h2 className="text-3xl font-bold mb-6">Available Rooms</h2>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-6">
         {rooms.map((room) => (
           <div
             key={room._id}
-            className="border rounded-xl p-4 shadow hover:shadow-lg transition cursor-pointer"
+            className="border rounded-2xl p-6 shadow-sm bg-white "
           >
-            <h3 className="font-semibold text-xl">{room.name}</h3>
-            <p className="text-gray-600 mt-1">Capacity: {room.capacity}</p>
-            <p className="text-gray-800 font-medium mt-2">
-              {room.price}EGP / night
+            {/* Title */}
+            <h3 className="font-semibold text-2xl">{room.name}</h3>
+
+            {/* Capacity */}
+            <p className="text-gray-500 mt-2">
+              👥 <span className="font-medium">{room.capacity}</span> Guests
             </p>
-            <ul className="list-disc ml-5 mt-2 text-gray-600">
+
+            {/* Price */}
+            <p className="text-gray-800 font-semibold text-xl mt-3">
+              {room.price}{" "}
+              <span className="text-sm font-normal text-gray-500">
+                EGP / night
+              </span>
+            </p>
+
+            {/* Divider */}
+            <div className="my-4 border-t" />
+
+            {/* Amenities */}
+            <p className="font-medium text-gray-700 mb-2">Amenities:</p>
+
+            <div className="flex flex-wrap gap-2">
               {room.amenities.map((amenity) => (
-                <li key={amenity}>{amenity}</li>
+                <span
+                  key={amenity}
+                  className="px-3 py-1 bg-blue-100 text-gray-700 rounded-full text-sm font-medium border"
+                >
+                  {amenity}
+                </span>
               ))}
-            </ul>
+            </div>
           </div>
         ))}
       </div>
