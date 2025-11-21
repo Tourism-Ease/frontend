@@ -37,6 +37,7 @@ export const USER_ROUTES = {
 export const ADMIN_ROUTES = {
   ROOT: '/admin',
   DASHBOARD: '/admin/dashboard',
+  PROFILE: '/admin/profile',
 
   DESTINATIONS: '/admin/destinations',
   ADD_DESTINATION: '/admin/destinations/add',

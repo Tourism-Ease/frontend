@@ -16,9 +16,10 @@ import TripsPage from "@/features/admin/trips/pages/TripPage";
 import UsersPage from "@/features/admin/users/pages/UsersPage";
 import EditUserPage from "@/features/admin/users/pages/EditUserPage";
 import AddUserPage from "@/features/admin/users/pages/AddUserPage";
+import AdminProfilePage from "@/features/admin/admin-profile/pages/AdminProfilePage";
 
 // Placeholder components
-const Dashboard = () => <div>Admin Dashboard</div>;
+// const Dashboard = () => <div>Admin Dashboard</div>;
 const AddTrip = () => <div>Add Trip</div>;
 const EditTrip = () => <div>Edit Trip</div>;
 
@@ -33,7 +34,7 @@ export const adminRoutes = (
   <>
     <Route path={ADMIN_ROUTES.ROOT} element={<AdminLayout />}>
       {/* Dashboard */}
-      <Route path={relative(ADMIN_ROUTES.DASHBOARD)} element={<Dashboard />} />
+      {/* <Route path={relative(ADMIN_ROUTES.DASHBOARD)} element={<Dashboard />} /> */}
       {/* Destinations */}
       <Route
         path={relative(ADMIN_ROUTES.DESTINATIONS)}
@@ -80,6 +81,8 @@ export const adminRoutes = (
       <Route path={relative(ADMIN_ROUTES.EDIT_TRIP())} element={<EditTrip />} />
       
       {/* Users */}
+      
+      <Route path={relative(ADMIN_ROUTES.PROFILE)} element={<AdminProfilePage  />} />
       <Route path={relative(ADMIN_ROUTES.USERS)} element={<UsersPage />} />
       <Route path={relative(ADMIN_ROUTES.ADD_USER)} element={<AddUserPage />} />
       <Route path={relative(ADMIN_ROUTES.EDIT_USER())} element={<EditUserPage />} />

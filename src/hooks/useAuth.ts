@@ -19,22 +19,31 @@ export function useAuth() {
     setResetEmail,
     isCodeVerified,
     setIsCodeVerified,
+    authModal,
+    openAuthModal,
+    closeAuthModal,
+    deactivateAccount,
+    reactivateAccount,
   } = context;
 
   const isAdmin = user?.role === 'admin';
   const isUser = user?.role === 'user';
+  const isEmployee = user?.role === 'employee';
   const fullName = user ? `${user.firstName} ${user.lastName}` : '';
   const isLoadingProfile = isLoading;
+  const isAccountActive = user?.active !== false;
 
   return {
     user,
     updatedUser,
     setUpdatedUser,
-    isAuthenticated,
+    isAuthenticated: isAuthenticated && isAccountActive,
     isLoading: isLoadingProfile,
     isAdmin,
     isUser,
+    isEmployee,
     fullName,
+    isAccountActive,
     login,
     logout,
     updateUser,
@@ -43,5 +52,10 @@ export function useAuth() {
     setResetEmail,
     isCodeVerified,
     setIsCodeVerified,
+    authModal,
+    openAuthModal,
+    closeAuthModal,
+    deactivateAccount,
+    reactivateAccount,
   };
 }

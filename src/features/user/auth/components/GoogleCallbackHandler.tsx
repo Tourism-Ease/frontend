@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
-import { useAuth } from '../../../../hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
 import { authAPI } from '../api/auth.api';
 import toast from 'react-hot-toast';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '../../../../components/ui/card';
-import { Spinner } from '../../../../components/ui/Spinner';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
+import { Spinner } from '@/components/ui/Spinner';
 
 export default function GoogleCallbackHandler() {
   const { login } = useAuth();

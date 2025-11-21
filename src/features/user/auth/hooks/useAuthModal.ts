@@ -6,6 +6,7 @@ import { useForgotPassword } from "./useForgotPassword";
 import { useVerifyResetCode } from "./useVerifyResetCode";
 import { useResetPassword } from "./useResetPassword";
 import toast from "react-hot-toast";
+import type { User } from "@/context/AuthContext";
 
 export type AuthView =
   | "login"
@@ -14,28 +15,38 @@ export type AuthView =
   | "verify-reset-code"
   | "reset-password";
 
+interface UseAuthModalProps {
+  defaultView?: AuthView;
+  onClose?: () => void;
+}
+
 export function useAuthModal({
   defaultView = "login",
   onClose,
-}: { defaultView?: AuthView; onClose?: () => void } = {}) {
+}: UseAuthModalProps = {}) {
   const [currentView, setCurrentView] = useState<AuthView>(defaultView);
   const [email, setEmail] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Auth hooks - pass local success callbacks so modal can be closed from hooks
-  const loginHook = useLogin(() => closeModal());
-  const registerHook = useRegister(() => closeModal());
+  // Success callback that closes the modal
+  const handleSuccess = useCallback((user: User) => {
+    toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ""}!`);
+    closeModal();
+  }, []);
+
+  // Auth hooks with success callback
+  const loginHook = useLogin(handleSuccess);
+  const registerHook = useRegister(handleSuccess);
   const forgotPasswordHook = useForgotPassword();
   const verifyResetCodeHook = useVerifyResetCode(() =>
     setCurrentView("reset-password")
   );
-  const resetPasswordHook = useResetPassword(() => closeModal());
+  const resetPasswordHook = useResetPassword(handleSuccess);
 
   const closeModal = useCallback(() => {
     if (onClose) onClose();
-    // small delay to let animation run
     setTimeout(() => {
       setCurrentView(defaultView);
       setEmail("");
@@ -58,7 +69,6 @@ export function useAuthModal({
           toast.success("Reset code sent to your email");
           setCurrentView("verify-reset-code");
         },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err: any) => {
           const message =
             err instanceof Error ? err.message : "Failed to send reset code";
@@ -98,20 +108,6 @@ export function useAuthModal({
     () => setCurrentView("forgot-password"),
     []
   );
-  const goBack = useCallback(() => {
-    if (
-      currentView === "forgot-password" ||
-      currentView === "verify-reset-code" ||
-      currentView === "reset-password"
-    )
-      setCurrentView("login");
-    else if (registerHook.needsEmailVerification) setCurrentView("register");
-  }, [currentView, registerHook]);
-
-  const handleGoogleSuccess = useCallback(() => {
-    closeModal();
-    toast.success("Signed in with Google");
-  }, [closeModal]);
 
   return {
     currentView,
@@ -136,13 +132,11 @@ export function useAuthModal({
     goToLogin,
     goToRegister,
     goToForgotPassword,
-    goBack,
     isLoading:
       loginHook.isLoading ||
       registerHook.isLoading ||
       forgotPasswordHook.isPending ||
       verifyResetCodeHook.isPending ||
       resetPasswordHook.isPending,
-    handleGoogleSuccess,
   };
 }

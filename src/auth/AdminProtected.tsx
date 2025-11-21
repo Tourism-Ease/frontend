@@ -1,11 +1,16 @@
-import { Navigate, useLocation } from 'react-router';
-import { Spinner } from '../components/ui/Spinner';
-import { useAuth } from '../hooks/useAuth';
+import { Spinner } from "@/components/ui/Spinner";
+import { useAuth } from "@/hooks/useAuth";
+import { Navigate, useLocation } from "react-router";
 
-export default function AdminProtected({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, isLoading, user } = useAuth();
+interface AdminProtectedProps {
+  children: React.ReactNode;
+}
+
+export default function AdminProtected({ children }: AdminProtectedProps) {
+  const { isAuthenticated, isLoading, isAdmin } = useAuth();
   const location = useLocation();
 
+  // Show loading spinner while checking authentication
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -14,13 +19,16 @@ export default function AdminProtected({ children }: { children: React.ReactNode
     );
   }
 
+  // Redirect to home if not authenticated
   if (!isAuthenticated) {
-    return <Navigate to="/admin/login" state={{ from: location }} replace />;
+    return <Navigate to="/" state={{ from: location }} replace />;
   }
 
-  if (user?.role !== 'admin') {
+  // Redirect to home if user is not an admin
+  if (!isAdmin) {
     return <Navigate to="/" replace />;
   }
 
+  // Render children if user is authenticated and is admin
   return <>{children}</>;
 }

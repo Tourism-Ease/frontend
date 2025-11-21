@@ -1,18 +1,24 @@
+// src/features/user/profile/hooks/useProfile.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { profileAPI } from "../api/profile.api";
-import type { UserProfile, UpdateProfileInput, ChangePasswordInput } from "../types";
+import type { User } from "@/context/AuthContext";
+import type { UpdateProfileInput, ChangePasswordInput } from "../types";
 import { toast } from "sonner";
 
-// Fetch user profile
-export const useProfile = () => useQuery<UserProfile>({ queryKey: ["profile"], queryFn: profileAPI.getProfile });
+// Fetch user profile - FIXED: Use User type instead of UserProfile
+export const useProfile = () => useQuery<User>({ 
+  queryKey: ["profile"], 
+  queryFn: profileAPI.getProfile 
+});
 
-// Update profile (with or without avatar)
+// Update profile - FIXED: Use User type
 export const useUpdateProfile = () => {
-  const qc = useQueryClient();
-  return useMutation<UserProfile, Error, Partial<UpdateProfileInput>>({
-    mutationFn: profileAPI.updateProfile,
-    onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["profile"] });
+  const queryClient = useQueryClient();
+  return useMutation<User, Error, Partial<UpdateProfileInput>>({
+    mutationFn: (data: Partial<UpdateProfileInput>) => profileAPI.updateProfile(data),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(["profile"], updatedUser);
+      queryClient.invalidateQueries({ queryKey: ["profile"] });
       toast.success("Profile updated successfully!");
     },
     onError: (err: Error) => {
@@ -21,19 +27,20 @@ export const useUpdateProfile = () => {
   });
 };
 
-
-
-// Change password
+// Change password - FIXED: Use User type
 export const useChangePassword = () => {
-  const qc = useQueryClient();
-  return useMutation<void, Error, ChangePasswordInput>({
-    mutationFn: profileAPI.changePassword,
-    onSuccess: () => {
+  const queryClient = useQueryClient();
+  return useMutation<User, Error, ChangePasswordInput>({
+    mutationFn: (data: ChangePasswordInput) => profileAPI.changePassword({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword
+    }),
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData(["profile"], updatedUser);
       toast.success("Password changed successfully!");
-      qc.invalidateQueries({ queryKey: ["profile"] });
     },
-    onError: () => {
-      toast.error("Failed to change password");
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to change password");
     },
   });
 };

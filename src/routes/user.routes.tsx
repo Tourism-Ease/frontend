@@ -59,14 +59,15 @@ export const userRoutes = (
       <Route
         path={USER_ROUTES.PROFILE.replace('/', '')}
         element={
-          <ProtectedRoute requiredRole="user">
+          <ProtectedRoute>
             <ProfileDashboard />
           </ProtectedRoute>
         }
       />
       <Route
         path={USER_ROUTES.BOOKINGS.replace('/', '')}
-        element={<Bookings />}
+        element={
+        <Bookings />}
       />
       <Route
         path={USER_ROUTES.BOOKING_DETAILS.replace('/', '')}

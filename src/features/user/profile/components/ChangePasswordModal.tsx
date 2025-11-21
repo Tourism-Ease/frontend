@@ -1,11 +1,13 @@
+// src/features/user/profile/components/ChangePasswordModal.tsx
 import { useState } from "react";
 import { useChangePassword } from "../hooks/useProfile";
 import type { ChangePasswordInput } from "../types";
-import { Button } from "../../../../components/ui/button";
-import { Input } from "../../../../components/ui/input";
-import { Label } from "../../../../components/ui/label";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../../../components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/Spinner";
 
 interface Props {
   open: boolean;
@@ -21,15 +23,22 @@ export default function ChangePasswordModal({ open, onOpenChange }: Props) {
     confirmPassword: "",
   });
 
-  const handleInput =
-    (key: keyof ChangePasswordInput) =>
+  const handleInput = (key: keyof ChangePasswordInput) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm({ ...form, [key]: e.target.value });
+      setForm(prev => ({ ...prev, [key]: e.target.value }));
     };
 
-  const submit = (): void => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validation
+    if (form.newPassword.length < 6) {
+      toast.error("New password must be at least 6 characters long");
+      return;
+    }
+    
     if (form.newPassword !== form.confirmPassword) {
-      toast.error("Passwords do not match");
+      toast.error("New passwords do not match");
       return;
     }
 
@@ -40,7 +49,7 @@ export default function ChangePasswordModal({ open, onOpenChange }: Props) {
         toast.success("Password changed successfully");
       },
       onError: (error: Error) => {
-        toast.error(error.message);
+        toast.error(error.message || "Failed to change password");
       },
     });
   };
@@ -50,49 +59,69 @@ export default function ChangePasswordModal({ open, onOpenChange }: Props) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Change Password</DialogTitle>
+          <DialogDescription>
+            Enter your current password and set a new one.
+          </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label>Old Password</Label>
+            <Label htmlFor="currentPassword">Current Password</Label>
             <Input
+              id="currentPassword"
               type="password"
-              placeholder="Enter old password"
+              placeholder="Enter your current password"
               value={form.currentPassword}
               onChange={handleInput("currentPassword")}
-              className="cursor-text!"
+              required
+              disabled={changePassword.isPending}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>New Password</Label>
+            <Label htmlFor="newPassword">New Password</Label>
             <Input
+              id="newPassword"
               type="password"
-              placeholder="Enter new password"
+              placeholder="Enter new password (min 6 characters)"
               value={form.newPassword}
               onChange={handleInput("newPassword")}
-              className="cursor-text!"
+              required
+              minLength={6}
+              disabled={changePassword.isPending}
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Confirm Password</Label>
+            <Label htmlFor="confirmPassword">Confirm New Password</Label>
             <Input
+              id="confirmPassword"
               type="password"
-              placeholder="Confirm new password"
+              placeholder="Confirm your new password"
               value={form.confirmPassword}
               onChange={handleInput("confirmPassword")}
-              className="cursor-text!"
+              required
+              disabled={changePassword.isPending}
             />
           </div>
 
-          <div className="flex justify-end space-x-3">
-            <Button variant="outline" className="cursor-pointer" onClick={() => onOpenChange(false)}>
+          <div className="flex justify-end space-x-3 pt-4">
+            <Button 
+              type="button"
+              variant="outline" 
+              onClick={() => onOpenChange(false)}
+              disabled={changePassword.isPending}
+            >
               Cancel
             </Button>
-            <Button className="cursor-pointer" onClick={submit}>Save</Button>
+            <Button 
+              type="submit"
+              disabled={changePassword.isPending || !form.currentPassword || !form.newPassword || !form.confirmPassword}
+            >
+              {changePassword.isPending ? <Spinner size="sm" /> : "Change Password"}
+            </Button>
           </div>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

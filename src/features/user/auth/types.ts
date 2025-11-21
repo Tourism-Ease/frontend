@@ -1,10 +1,4 @@
-import type { User } from '../../../context/AuthContext';
 
-/**
- * ---------------------------
- * 🔹 REQUEST PAYLOADS
- * ---------------------------
- */
 
 import type { User } from "../../../context/AuthContext";
 
