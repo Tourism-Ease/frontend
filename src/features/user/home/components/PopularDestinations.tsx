@@ -10,23 +10,33 @@ export default function PopularDestinations() {
   interface Destination {
     img: string;
     name: string;
+    description: string;
+    rating: string;
   }
   const destinations: Destination[] = [
     {
       img: sharm,
       name: "Sharm Elshikh",
+      description: "Good Place",
+      rating: "Very Good",
     },
     {
       img: luxur,
       name: "Luxur",
+      description: "Good Place",
+      rating: "Very Good",
     },
     {
       img: Hurghda,
       name: "Hurghada",
+      description: "Good Place",
+      rating: "Very Good",
     },
     {
       img: Dahab,
       name: "Dahab",
+      description: "Good Place",
+      rating: "Very Good",
     },
   ];
 
@@ -92,6 +102,14 @@ export default function PopularDestinations() {
                   <span className="font-bold text-2xl sm:text-3xl text-center">
                     {dest.name}
                   </span>
+                  {/* <div className="flex flex-col items-center space-y-1">
+                  <span className="font-semibold text-base sm:text-lg">
+                    {dest.description}
+                  </span>
+                  <span className="text-lg sm:text-2xl font-bold">
+                    {dest.rating}
+                  </span>
+                </div> */}
                 </div>
               </motion.div>
             ))}

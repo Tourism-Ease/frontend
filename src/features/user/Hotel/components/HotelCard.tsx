@@ -7,7 +7,7 @@ interface HotelCardProps {
   country: string;
   stars: number;
   image: string;
-  Description: string;
+  description: string;
 }
 
 export default function HotelCard({
@@ -17,7 +17,7 @@ export default function HotelCard({
   country,
   stars,
   image,
-  Description,
+  description,
 }: HotelCardProps) {
   return (
     <Link
@@ -39,7 +39,7 @@ export default function HotelCard({
 
         <p className="text-yellow-500 text-sm">⭐ {stars} / 5</p>
 
-        <p className="text-gray-700 text-sm mt-2 line-clamp-2">{Description}</p>
+        <p className="text-gray-700 text-sm mt-2 line-clamp-2">{description}</p>
       </div>
     </Link>
   );

@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import loginCover from "../../../../assets/images/login-cover.jpg";
 import registerCover from "../../../../assets/images/register-cover.jpg";
 import { useAuthModal } from "../hooks/useAuthModal";
-import { Button } from "../../../../components/ui/button";
+import { Button } from "../../../../components/ui/Button";
 import { Input } from "../../../../components/ui/input";
 import { Spinner } from "../../../../components/ui/Spinner";
 import GoogleLoginButton from "./GoogleLoginButton";

@@ -24,7 +24,7 @@ export function useAuthModal({
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  // Auth hooks - pass local success callbacks so modal can be closed from hooks
+  // Hooks
   const loginHook = useLogin(() => closeModal());
   const registerHook = useRegister(() => closeModal());
   const forgotPasswordHook = useForgotPassword();
@@ -35,7 +35,6 @@ export function useAuthModal({
 
   const closeModal = useCallback(() => {
     if (onClose) onClose();
-    // small delay to let animation run
     setTimeout(() => {
       setCurrentView(defaultView);
       setEmail("");
@@ -46,10 +45,7 @@ export function useAuthModal({
   }, [defaultView, onClose]);
 
   const handleForgotPassword = useCallback(() => {
-    if (!email) {
-      toast.error("Please enter your email");
-      return;
-    }
+    if (!email) return toast.error("Please enter your email");
 
     forgotPasswordHook.mutate(
       { email },
@@ -60,9 +56,7 @@ export function useAuthModal({
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (err: any) => {
-          const message =
-            err instanceof Error ? err.message : "Failed to send reset code";
-          toast.error(message);
+          toast.error(err?.message || "Failed to send reset code");
         },
       }
     );
@@ -71,22 +65,21 @@ export function useAuthModal({
   const handleVerifyCode = useCallback(() => {
     if (!resetCode || resetCode.length !== 6)
       return toast.error("Enter a valid 6-digit code");
+
     verifyResetCodeHook.mutate({ email, resetCode });
   }, [resetCode, email, verifyResetCodeHook]);
 
   const handlePasswordReset = useCallback(() => {
     if (!newPassword || !confirmPassword) return toast.error("Fill all fields");
-    if (newPassword !== confirmPassword)
-      return toast.error("Passwords don't match");
-    if (newPassword.length < 6)
-      return toast.error("Password must be at least 6 characters");
+    if (newPassword !== confirmPassword) return toast.error("Passwords don't match");
+    if (newPassword.length < 6) return toast.error("Password must be at least 6 characters");
+
     resetPasswordHook.mutate({ email, newPassword });
   }, [newPassword, confirmPassword, email, resetPasswordHook]);
 
   const handleEmailVerification = useCallback(
     (verifyCode: string) => {
-      if (verifyCode.length !== 6)
-        return toast.error("Enter a valid 6-digit code");
+      if (verifyCode.length !== 6) return toast.error("Enter a valid 6-digit code");
       registerHook.onVerifyEmail(verifyCode);
     },
     [registerHook]
@@ -94,18 +87,18 @@ export function useAuthModal({
 
   const goToLogin = useCallback(() => setCurrentView("login"), []);
   const goToRegister = useCallback(() => setCurrentView("register"), []);
-  const goToForgotPassword = useCallback(
-    () => setCurrentView("forgot-password"),
-    []
-  );
+  const goToForgotPassword = useCallback(() => setCurrentView("forgot-password"), []);
+
   const goBack = useCallback(() => {
     if (
       currentView === "forgot-password" ||
       currentView === "verify-reset-code" ||
       currentView === "reset-password"
-    )
+    ) {
       setCurrentView("login");
-    else if (registerHook.needsEmailVerification) setCurrentView("register");
+    } else if (registerHook.needsEmailVerification) {
+      setCurrentView("register");
+    }
   }, [currentView, registerHook]);
 
   const handleGoogleSuccess = useCallback(() => {
@@ -119,30 +112,42 @@ export function useAuthModal({
     resetCode,
     newPassword,
     confirmPassword,
+
     setEmail,
     setResetCode,
     setNewPassword,
     setConfirmPassword,
+
     loginHook,
     registerHook,
     forgotPasswordHook,
     verifyResetCodeHook,
     resetPasswordHook,
+
     closeModal,
+
     handleForgotPassword,
     handleVerifyCode,
     handlePasswordReset,
     handleEmailVerification,
+
     goToLogin,
     goToRegister,
     goToForgotPassword,
     goBack,
+
     isLoading:
       loginHook.isLoading ||
       registerHook.isLoading ||
       forgotPasswordHook.isPending ||
       verifyResetCodeHook.isPending ||
       resetPasswordHook.isPending,
+
     handleGoogleSuccess,
+
+    // ✅ ADD THESE (fixes your errors)
+    reactivationState: loginHook.reactivationState,
+    handleReactivationConfirm: loginHook.handleReactivationConfirm,
+    handleReactivationCancel: loginHook.handleReactivationCancel,
   };
 }

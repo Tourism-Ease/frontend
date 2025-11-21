@@ -1,3 +1,4 @@
+// src/routes/user.routes.tsx
 /* eslint-disable react-refresh/only-export-components */
 import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
@@ -9,9 +10,9 @@ import Trips from "../features/user/trips/pages/Trips";
 import TripDetails from "./../features/user/trips/pages/TripDetails";
 import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
-import ProtectedRoute from "./../auth/UserProtected";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
+import UserProtectedRoute from "../auth/UserProtectedRoute";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -22,8 +23,16 @@ const Recommendations = () => <div>AI Trip Recommendations</div>;
 
 export const userRoutes = (
   <>
-    <Route path={PUBLIC_ROUTES.HOME} element={<UserLayout />}>
-      {/* Public Routes */}
+    {/* Public Layout - No protection for public routes */}
+    <Route
+      path={PUBLIC_ROUTES.HOME}
+      element={
+        <UserProtectedRoute>
+          <UserLayout />
+        </UserProtectedRoute>
+      }
+    >
+      {/* Public Routes - Accessible to everyone */}
       <Route index element={<Home />} />
       <Route
         path={PUBLIC_ROUTES.ABOUT.replace("/", "")}
@@ -33,9 +42,9 @@ export const userRoutes = (
         path={PUBLIC_ROUTES.CONTACT.replace("/", "")}
         element={<ContactPage />}
       />
-      <Route path={PUBLIC_ROUTES.TRIPS.replace('/', '')} element={<Trips />} />
+      <Route path={PUBLIC_ROUTES.TRIPS.replace("/", "")} element={<Trips />} />
       <Route
-        path={PUBLIC_ROUTES.TRIP_DETAILS.replace('/', '')}
+        path={PUBLIC_ROUTES.TRIP_DETAILS.replace("/", "")}
         element={<TripDetails />}
       />
       <Route
@@ -47,45 +56,40 @@ export const userRoutes = (
         element={<HotelDetails />}
       />
 
-      {/* Auth Routes */}
-      <Route path={'/auth/success'} element={<GoogleCallbackHandler />} />
+      {/* Auth Routes - Public */}
+      <Route path={"/auth/success"} element={<GoogleCallbackHandler />} />
       <Route
         path="/auth/error"
         element={<div>Google authentication failed. Please try again.</div>}
       />
 
-      {/* User Routes */}
-
+      {/* 🔒 Protected User Routes - Only for authenticated non-admin users */}
       <Route
-        path={USER_ROUTES.PROFILE.replace('/', '')}
-        element={
-          <ProtectedRoute requiredRole="user">
-            <ProfileDashboard />
-          </ProtectedRoute>
-        }
+        path={USER_ROUTES.PROFILE.replace("/", "")}
+        element={<ProfileDashboard />}
       />
       <Route
-        path={USER_ROUTES.BOOKINGS.replace('/', '')}
+        path={USER_ROUTES.BOOKINGS.replace("/", "")}
         element={<Bookings />}
       />
       <Route
-        path={USER_ROUTES.BOOKING_DETAILS.replace('/', '')}
+        path={USER_ROUTES.BOOKING_DETAILS.replace("/", "")}
         element={<BookingDetails />}
       />
       <Route
-        path={USER_ROUTES.PAYMENTS.replace('/', '')}
+        path={USER_ROUTES.PAYMENTS.replace("/", "")}
         element={<Payments />}
       />
       <Route
-        path={USER_ROUTES.REVIEWS.replace('/', '')}
+        path={USER_ROUTES.REVIEWS.replace("/", "")}
         element={<Reviews />}
       />
       <Route
-        path={USER_ROUTES.AI_ASSISTANT.replace('/', '')}
+        path={USER_ROUTES.AI_ASSISTANT.replace("/", "")}
         element={<AIAssistant />}
       />
       <Route
-        path={USER_ROUTES.RECOMMENDATIONS.replace('/', '')}
+        path={USER_ROUTES.RECOMMENDATIONS.replace("/", "")}
         element={<Recommendations />}
       />
     </Route>

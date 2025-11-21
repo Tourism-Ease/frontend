@@ -6,4 +6,3 @@ export interface PackageType {
   imageCoverUrl: string;
   images: string[];
 }
-  

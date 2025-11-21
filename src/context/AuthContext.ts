@@ -1,53 +1,42 @@
 import { createContext } from 'react';
 
-export type UserAddress = {
-  id: string;
-  alias?: string;
-  country: string;
-  city: string;
-  street: string;
-  building: string;
-  apartment: string;
-  details?: string;
-  phone: string;
-  postalCode?: string;
-};
-
-export type User = {
+export interface User {
   id: string;
   firstName: string;
   lastName: string;
   email: string;
-  phone?: string;
-  profileImage?: string;
-  profileImageUrl?: string;
-  role: 'user' | 'admin';
+  role: 'user' | 'admin' | 'employee';
+  avatarUrl?: string;
+  isEmailVerified: boolean;
   active: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-};
+  phone?: string;
+}
 
-export type UpdatedUser = Partial<User>;
-
-export type AuthContextType = {
-  // User state
+export interface AuthState {
   user: User | null;
-  updatedUser: UpdatedUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-
-  // Auth actions
   login: (user: User) => void;
   logout: () => void;
-  updateUser: (user: UpdatedUser) => void;
+  updateUser: (user: Partial<User>) => void;
   setUser: (user: User | null) => void;
-  setUpdatedUser: (user: UpdatedUser | null) => void;
-
-  // Password reset state
-  resetEmail: string | null;
-  setResetEmail: (email: string | null) => void;
+  updatedUser: User | null;
+  setUpdatedUser: (user: User | null) => void;
+  resetEmail: string;
+  setResetEmail: (email: string) => void;
   isCodeVerified: boolean;
   setIsCodeVerified: (verified: boolean) => void;
-};
+  // Modal authentication
+  authModal: {
+    isOpen: boolean;
+    view: 'login' | 'register' | 'forgot-password' | 'verify-reset-code' | 'reset-password' | 'reactivate-account';
+    redirectPath: string | null;
+  };
+  openAuthModal: (view?: AuthState['authModal']['view'], redirectPath?: string | null) => void;
+  closeAuthModal: () => void;
+  // Account management
+  deactivateAccount: () => Promise<void>;
+  reactivateAccount: (email: string, password: string) => Promise<void>;
+}
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthState | undefined>(undefined);
