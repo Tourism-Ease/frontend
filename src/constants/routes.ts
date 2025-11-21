@@ -21,14 +21,14 @@ export const PUBLIC_ROUTES = {
 // User Routes
 // =====================
 export const USER_ROUTES = {
-  ROOT: '/',
-  PROFILE: '/profile',
-  BOOKINGS: '/bookings',
-  BOOKING_DETAILS: '/bookings/:id',
-  PAYMENTS: '/payments',
-  REVIEWS: '/reviews',
-  AI_ASSISTANT: '/assistant',
-  RECOMMENDATIONS: '/recommendations',
+  ROOT: "/",
+  PROFILE: "/profile",
+  BOOKINGS: "/bookings",
+  BOOKING_DETAILS: "/bookings/:id",
+  PAYMENTS: "/payments",
+  REVIEWS: "/reviews",
+  AI_ASSISTANT: "/assistant",
+  RECOMMENDATIONS: "/recommendations",
 } as const;
 
 // =====================
@@ -39,23 +39,23 @@ export const ADMIN_ROUTES = {
   DASHBOARD: '/admin/dashboard',
   PROFILE: '/admin/profile',
 
-  DESTINATIONS: '/admin/destinations',
-  ADD_DESTINATION: '/admin/destinations/add',
-  EDIT_DESTINATION: (id: string = ':id') => `/admin/destinations/edit/${id}`,
+  DESTINATIONS: "/admin/destinations",
+  ADD_DESTINATION: "/admin/destinations/add",
+  EDIT_DESTINATION: (id: string = ":id") => `/admin/destinations/edit/${id}`,
 
-  TRANSPORTATIONS: '/admin/transportations',
-  ADD_TRANSPORTATION: '/admin/transportations/add',
-  EDIT_TRANSPORTATION: (id: string = ':id') =>
+  TRANSPORTATIONS: "/admin/transportations",
+  ADD_TRANSPORTATION: "/admin/transportations/add",
+  EDIT_TRANSPORTATION: (id: string = ":id") =>
     `/admin/transportations/edit/${id}`,
 
-  HOTELS: '/admin/hotels',
-  HOTEL_DETAILS: (id: string = ':id') => `/admin/hotels/${id}`,
-  ADD_HOTEL: '/admin/hotels/add',
-  EDIT_HOTEL: (id: string = ':id') => `/admin/hotels/edit/${id}`,
+  HOTELS: "/admin/hotels",
+  HOTEL_DETAILS: (id: string = ":id") => `/admin/hotels/${id}`,
+  ADD_HOTEL: "/admin/hotels/add",
+  EDIT_HOTEL: (id: string = ":id") => `/admin/hotels/edit/${id}`,
 
-  TRIPS: '/admin/trips',
-  ADD_TRIP: '/admin/trips/add',
-  EDIT_TRIP: (id: string = ':id') => `/admin/trips/edit/${id}`,
+  TRIPS: "/admin/trips",
+  ADD_TRIP: "/admin/trips/add",
+  EDIT_TRIP: (id: string = ":id") => `/admin/trips/edit/${id}`,
 
   USERS: '/admin/users',
   ADD_USER: '/admin/users/add',

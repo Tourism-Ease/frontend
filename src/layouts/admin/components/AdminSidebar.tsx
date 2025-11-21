@@ -1,5 +1,5 @@
-import { SidebarLink } from './SidebarLink';
-import { ADMIN_ROUTES } from '@/constants/routes';
+import { SidebarLink } from "./SidebarLink";
+import { ADMIN_ROUTES } from "@/constants/routes";
 import {
   LayoutDashboard,
   Plane,
@@ -10,7 +10,8 @@ import {
   FileText,
   Settings,
   X,
-} from 'lucide-react';
+  Ticket,
+} from "lucide-react";
 
 export function AdminSidebar({
   isOpen,
@@ -21,30 +22,35 @@ export function AdminSidebar({
 }) {
   const sidebarItems = [
     {
-      label: 'Dashboard',
+      label: "Dashboard",
       to: ADMIN_ROUTES.DASHBOARD,
       icon: <LayoutDashboard size={18} />,
     },
     {
-      label: 'Destinations',
+      label: "Destinations",
       to: ADMIN_ROUTES.DESTINATIONS,
       icon: <Map size={18} />,
     },
     {
-      label: 'Transportations',
+      label: "Transportations",
       to: ADMIN_ROUTES.TRANSPORTATIONS,
       icon: <Bus size={18} />,
     },
-    { label: 'Hotels', to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
-    { label: 'Trips', to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
-    { label: 'Users', to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
+    { label: "Hotels", to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
+    { label: "Trips", to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
+    { label: "Users", to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
     {
-      label: 'Reports',
+      label: "Bookings",
+      to: ADMIN_ROUTES.BOOKINGS,
+      icon: <Ticket size={18} />,
+    },
+    {
+      label: "Reports",
       to: ADMIN_ROUTES.REPORTS,
       icon: <FileText size={18} />,
     },
     {
-      label: 'Settings',
+      label: "Settings",
       to: ADMIN_ROUTES.SETTINGS,
       icon: <Settings size={18} />,
     },
@@ -65,7 +71,7 @@ export function AdminSidebar({
         className={`
           fixed top-0 left-0 h-screen w-64 bg-card border-r px-4 py-6 z-50
           transform transition-transform duration-300
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'} 
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} 
           md:translate-x-0
         `}
       >
