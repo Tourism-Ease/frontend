@@ -1,15 +1,15 @@
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
-import { authAPI } from '../api/auth.api';
-import { loginSchema, type LoginForm } from '../schemas/auth.schema';
-import { useCallback } from 'react';
-import { useAuth } from '@/hooks/useAuth';
-import { useNavigate } from 'react-router';
-import type { User } from '@/context/AuthContext';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { authAPI } from "../api/auth.api";
+import { loginSchema, type LoginForm } from "../schemas/auth.schema";
+import { useCallback } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router";
+import type { User } from "@/context/AuthContext";
 
-export function useLogin(onSuccess?: (user: User) => void) {
+export function useLogin(onSuccess?: () => void) {
   const { login: loginContext } = useAuth();
   const navigate = useNavigate();
 
@@ -20,32 +20,42 @@ export function useLogin(onSuccess?: (user: User) => void) {
   });
 
   const loginMutation = useMutation({
-    mutationFn: (values: LoginForm) => authAPI.login(values),
-    onSuccess: async (user) => {
+    mutationFn: async (values: LoginForm) => {
+      // First, perform the login
+      const user = await authAPI.login(values);
+      
+      // Then, wait a brief moment to ensure cookies/session are set
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // Finally, get the fresh user data to ensure all data is loaded
+      const freshUser = await authAPI.me();
+      return freshUser;
+    },
+    onSuccess: async (user: User) => {
+      // Update context with complete user data
       loginContext(user);
+      
+      // Show success message
       toast.success(`Welcome${user.firstName ? `, ${user.firstName}` : ''}!`);
-
+      
+      // Wait a bit more to ensure everything is settled
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       // Handle redirection based on user role
-      setTimeout(() => {
-        switch (user.role) {
-          case 'admin':
-            navigate('/admin', { replace: true });
-            toast.success('Redirecting to admin dashboard');
-            break;
-          case 'employee':
-            // Redirect employees to home or employee dashboard
-            navigate('/', { replace: true });
-            toast.success('Welcome back!');
-            break;
-          case 'user':
-          default:
-            navigate('/', { replace: true });
-            toast.success('Welcome back!');
-            break;
-        }
-      }, 1000);
-
-      if (onSuccess) onSuccess(user);
+      switch (user.role) {
+        case 'admin':
+          navigate('/admin', { replace: true });
+          break;
+        case 'employee':
+          navigate('/', { replace: true });
+          break;
+        case 'user':
+        default:
+          navigate('/', { replace: true });
+          break;
+      }
+      
+      if (onSuccess) onSuccess();
     },
     onError: (err: unknown) => {
       const message = err instanceof Error ? err.message : 'Login failed';

@@ -9,6 +9,7 @@ import {
   Users,
   X,
   Ticket,
+  Package 
 } from "lucide-react";
 
 export function AdminSidebar({
@@ -23,6 +24,11 @@ export function AdminSidebar({
       label: "Dashboard",
       to: ADMIN_ROUTES.DASHBOARD,
       icon: <LayoutDashboard size={18} />,
+    },
+    {
+      label: "Packages",
+      to: ADMIN_ROUTES.PACKAGE,
+      icon: <Package size={18} />,
     },
     {
       label: "Destinations",

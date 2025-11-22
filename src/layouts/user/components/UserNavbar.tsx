@@ -1,6 +1,7 @@
+// src/layouts/user/components/UserNavbar.tsx
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router";
-import { X, Plane, User, LogOut } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router";
+import { X, Plane, User, LogOut, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
@@ -9,11 +10,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuItem,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
-import AuthModal from "../../../features/user/auth/components/AuthModal";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
+import { Spinner } from "@/components/ui/Spinner";
+import AuthModal from "../../../features/user/auth/components/AuthModal"; // Add this import
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
@@ -24,10 +26,12 @@ const navLinks = [
 
 export default function UserNavbar() {
   const location = useLocation();
-  const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, isLoading, logout, openAuthModal, authModal, closeAuthModal } = useAuth(); // Add authModal and closeAuthModal
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false); // <- using combined modal
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({});
 
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -45,9 +49,9 @@ export default function UserNavbar() {
 
   useEffect(() => {
     if (mobileOpen) {
-      document.body.style.overflow = "hidden"; // Disable scroll
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto"; // Enable scroll back
+      document.body.style.overflow = "auto";
     }
     return () => {
       document.body.style.overflow = "auto";
@@ -71,6 +75,48 @@ export default function UserNavbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [mobileOpen]);
+
+  const handleLoginClick = () => {
+    openAuthModal("login");
+  };
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await logout();
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const handleProfileClick = () => {
+    navigate("/profile");
+  };
+
+  const handleImageLoad = (userId: string) => {
+    setImageLoaded(prev => ({ ...prev, [userId]: true }));
+  };
+
+  const handleImageError = (userId: string) => {
+    setImageLoaded(prev => ({ ...prev, [userId]: false }));
+  };
+
+  // Get user initials for fallback avatar
+  const getUserInitials = () => {
+    if (!user) return "US";
+    return `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase() || "US";
+  };
+
+  // Get user full name for display
+  const getUserFullName = () => {
+    if (!user) return "User";
+    return `${user.firstName} ${user.lastName}`;
+  };
+
+  // Check if user has avatar and it's loaded
+  const hasAvatar = user?.avatarUrl && imageLoaded[user.id] !== false;
 
   return (
     <>
@@ -123,48 +169,54 @@ export default function UserNavbar() {
 
           {/* Right controls */}
           <div className="flex items-center gap-3">
-            {isAuthenticated && user ? (
+            {isLoading ? (
+              // Show loading state while checking auth
+              <div className="flex items-center gap-2">
+                <Spinner size="sm" />
+                <span className={cn(
+                  "text-sm",
+                  isTransparent ? "text-white" : "text-gray-600"
+                )}>
+                  Loading...
+                </span>
+              </div>
+            ) : isAuthenticated && user ? (
+              // User is authenticated - show profile dropdown
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  {user.avatarUrl ? (
-                    /* === REAL PROFILE IMAGE === */
-                    <img
-                      src={user.avatarUrl}
-                      alt="Profile"
-                      className="
-              w-10 h-10 rounded-full object-cover cursor-pointer
-              border-2 border-gray-300 hover:border-blue-500
-              transition-all duration-200 select-none shrink-0
-            "
-                    />
-                  ) : (
-                    /* === FALLBACK WITH INITIALS === */
-                    <div
-                      className="
-              w-10 h-10 rounded-full cursor-pointer shrink-0
-              bg-gray-300 text-gray-700
-              flex items-center justify-center
-              text-sm font-bold uppercase
-              border-2 border-gray-300 hover:border-blue-500
-              transition-all duration-200
-            "
-                    >
-                      {user.firstName.slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
+                  <Button 
+                    variant="ghost" 
+                    className="relative h-10 w-10 rounded-full cursor-pointer p-0 overflow-hidden"
+                    disabled={isLoggingOut}
+                  >
+                    {isLoggingOut ? (
+                      <div className="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center">
+                        <Spinner size="sm" />
+                      </div>
+                    ) : hasAvatar ? (
+                      /* User has profile image - show it directly */
+                      <img
+                        src={user.avatarUrl}
+                        alt={getUserFullName()}
+                        className="h-10 w-10 rounded-full object-cover border-2 border-gray-300 hover:border-blue-500 transition-all duration-200"
+                        onLoad={() => handleImageLoad(user.id)}
+                        onError={() => handleImageError(user.id)}
+                      />
+                    ) : (
+                      /* Fallback to initials - FIXED: changed bg-linear-to-br to bg-gradient-to-br */
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white flex items-center justify-center text-sm font-bold uppercase border-2 border-blue-400">
+                        {getUserInitials()}
+                      </div>
+                    )}
+                  </Button>
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent
                   align="end"
                   sideOffset={10}
-                  className="
-          w-48 bg-white dark:bg-gray-800 shadow-md rounded-md 
-          border border-gray-200 dark:border-gray-700 p-2
-          animate-in fade-in-0 zoom-in-95
-          animate-out fade-out-0 zoom-out-95
-        "
+                  className="w-48 bg-white shadow-md rounded-md border border-gray-200 p-2 animate-in fade-in-0 zoom-in-95"
                 >
-                  <DropdownMenuLabel className="text-sm font-semibold text-gray-700 dark:text-gray-200 px-2 py-1">
+                  <DropdownMenuLabel className="text-sm font-semibold text-gray-700 px-2 py-1">
                     {user.firstName} {user.lastName}
                   </DropdownMenuLabel>
 
@@ -173,25 +225,46 @@ export default function UserNavbar() {
                   <DropdownMenuItem asChild>
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-2 py-2 rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                      className="flex items-center gap-2 px-2 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
                     >
                       <User className="h-4 w-4" /> Profile
                     </Link>
                   </DropdownMenuItem>
 
                   <DropdownMenuItem
-                    onClick={logout}
-                    className="flex items-center gap-2 px-2 py-2 rounded-md text-red-600 hover:bg-red-50 dark:hover:bg-red-900"
+                    onClick={handleLogout}
+                    disabled={isLoggingOut}
+                    className="flex items-center gap-2 px-2 py-2 rounded-md text-red-600 hover:bg-red-50 cursor-pointer"
                   >
-                    <LogOut className="h-4 w-4" /> Logout
+                    <LogOut className="h-4 w-4" /> 
+                    {isLoggingOut ? "Logging out..." : "Logout"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button className="cursor-pointer" size="sm" onClick={() => setAuthOpen(true)}>
+              // User is not authenticated - show login button
+              <Button 
+                className="cursor-pointer" 
+                size="sm" 
+                onClick={handleLoginClick}
+              >
                 Login
               </Button>
             )}
+
+            {/* Mobile menu button */}
+            <Button
+              ref={toggleRef}
+              variant="ghost"
+              size="icon"
+              className={cn(
+                "md:hidden cursor-pointer",
+                isTransparent ? "text-white" : "text-gray-600"
+              )}
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
           </div>
         </div>
 
@@ -216,12 +289,12 @@ export default function UserNavbar() {
               className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
               onClick={() => setMobileOpen(false)} // close when clicking outside
             >
-              {/* Close Button */}
+              {/* Close Button - FIXED: changed right-18 to right-4 and text color */}
               <button
                 onClick={() => setMobileOpen(false)}
-                className="absolute top-2.5 right-18 z-50 p-2 cursor-pointer"
+                className="absolute top-4 right-4 z-50 p-2 cursor-pointer"
               >
-                <X className="h-6 w-6 text-gray-700" />
+                <X className="h-6 w-6 text-white" />
               </button>
 
               {/* Menu Card */}
@@ -254,8 +327,8 @@ export default function UserNavbar() {
         </AnimatePresence>
       </nav>
 
-      {/* Top-level Auth Modal */}
-      <AuthModal isOpen={authOpen} setIsOpen={setAuthOpen} />
+      {/* Top-level Auth Modal - FIXED: using authModal from context instead of local state */}
+      <AuthModal isOpen={authModal.isOpen} setIsOpen={(open) => !open && closeAuthModal()} />
     </>
   );
 }

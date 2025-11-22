@@ -15,7 +15,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [resetEmail, setResetEmail] = useState("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
 
-  // Modal state - fixed the type
+  // Modal state
   const [authModal, setAuthModal] = useState<AuthState["authModal"]>({
     isOpen: false,
     view: "login",
@@ -44,14 +44,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const login = (userData: User) => {
-    setUser(userData);
-    
-    // Auto-close modal on successful login
-    closeAuthModal();
-    
-    // Show welcome message
-    toast.success(`Welcome${userData.firstName ? `, ${userData.firstName}` : ''}!`);
+  const login = async (userData: User) => {
+    try {
+      const freshUser = await authAPI.me();
+      setUser(freshUser);
+      closeAuthModal();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      setUser(userData);
+      closeAuthModal();
+    }
   };
 
   const logout = async () => {
@@ -77,7 +79,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  // Modal handlers - fixed the type
+  // Modal handlers
   const openAuthModal = (
     view: AuthState["authModal"]["view"] = "login",
     redirectPath: string | null = null
@@ -114,8 +116,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
   // Account reactivation
   const reactivateAccount = async (email: string, password: string) => {
     try {
-      const userData = await authAPI.reactivateAccount(email, password);
-      setUser(userData);
+      const result = await authAPI.reactivateAccount({ email, password });
+      setUser(result.user);
       toast.success("Account reactivated successfully");
       closeAuthModal();
     } catch (error) {
