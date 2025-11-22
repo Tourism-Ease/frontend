@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getTrips } from "../api/getTrips";
+import { getTrips } from "../api/trips.api";
 import type { Trip } from "../types/Trip";
 
 export default function useTrips() {

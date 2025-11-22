@@ -1,6 +1,5 @@
 // =====================
 // Public Routes
-
 // =====================
 export const PUBLIC_ROUTES = {
   HOME: "/",
@@ -10,6 +9,7 @@ export const PUBLIC_ROUTES = {
   TRIP_DETAILS: "/trips/:id",
   HOTEL_DETAILS: "/HotelDetails/:id",
   PACKAGE: "/packages",
+  PACKAGE_DETAILS: "/packages/:id",
   LOGIN: "/login",
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",

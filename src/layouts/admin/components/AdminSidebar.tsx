@@ -36,8 +36,6 @@ export function AdminSidebar({
     },
     { label: 'Hotels', to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
     { label: 'Trips', to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
-    { label: "Hotels", to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
-    { label: "Trips", to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
     { label: 'Users', to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
     {
       label: "Bookings",

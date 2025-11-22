@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 // src/routes/user.routes.tsx
->>>>>>> 4dd052fc99ba24b1477e4abad02f5623e00a78c2
 /* eslint-disable react-refresh/only-export-components */
 import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
@@ -13,15 +10,10 @@ import Trips from "../features/user/trips/pages/Trips";
 import TripDetails from "./../features/user/trips/pages/TripDetails";
 import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
-<<<<<<< HEAD
-import ProtectedRoute from "./../auth/UserProtected";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
-=======
-import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
-import PackagesPage from "../features/user/Packages/Pages/PackagePage";
-import UserProtectedRoute from "../auth/UserProtectedRoute";
->>>>>>> 4dd052fc99ba24b1477e4abad02f5623e00a78c2
+// import UserProtectedRoute from "@/auth/UserProtectedRoute";
+import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
 
 const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
@@ -36,9 +28,7 @@ export const userRoutes = (
     <Route
       path={PUBLIC_ROUTES.HOME}
       element={
-        <UserProtectedRoute>
-          <UserLayout />
-        </UserProtectedRoute>
+        <UserLayout />
       }
     >
       {/* Public Routes - Accessible to everyone */}
@@ -59,6 +49,10 @@ export const userRoutes = (
       <Route
         path={PUBLIC_ROUTES.PACKAGE.replace("/", "")}
         element={<PackagesPage />}
+      />
+      <Route
+        path={PUBLIC_ROUTES.PACKAGE_DETAILS.replace("/", "")}
+        element={<PackageDetails />}
       />
       <Route
         path={PUBLIC_ROUTES.HOTEL_DETAILS.replace("/", "")}

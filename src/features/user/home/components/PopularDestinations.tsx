@@ -78,7 +78,7 @@ export default function PopularDestinations() {
                 key={idx}
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
-                className="w-[250px] sm:w-[280px] md:w-[300px] lg:w-[320px] flex-shrink-0 cursor-pointer group rounded-3xl overflow-hidden relative"
+                className="w-[250px] sm:w-[280px] md:w-[300px] lg:w-[320px] shrink-0 cursor-pointer group rounded-3xl overflow-hidden relative"
               >
                 {/* Image */}
                 <img

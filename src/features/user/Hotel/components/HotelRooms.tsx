@@ -14,7 +14,7 @@ export default function HotelRooms({ rooms }: HotelRoomsProps) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 md:grid-cols-3 gap-6">
         {rooms.map((room) => (
           <div
-            key={room._id}
+            key={room.id}
             className="border rounded-2xl p-6 shadow-sm bg-white "
           >
             {/* Title */}

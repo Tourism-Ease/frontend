@@ -12,10 +12,7 @@ import type {
   CreateDestinationDto,
   UpdateDestinationDto,
   PaginatedDestinationsResponse,
-<<<<<<< HEAD
   DestinationResponse,
-=======
->>>>>>> 4dd052fc99ba24b1477e4abad02f5623e00a78c2
 } from '../types/destination.type';
 
 // Query key
