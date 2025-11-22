@@ -10,8 +10,6 @@ export interface Location {
   coordinates: number[];
 }
 
-
-
 export interface Hotel {
   id: string;
   name: string;
@@ -28,8 +26,4 @@ export interface Hotel {
 export const getHotelById = async (id: string): Promise<Hotel> => {
   const response = await http.get(`hotels/${id}`);
   return response.data.data;
-};
-export const getAllHotels = async (): Promise<Hotel[]> => {
-  const res = await http.get("hotels");
-  return res.data.data; 
 };

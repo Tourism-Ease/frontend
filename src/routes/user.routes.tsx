@@ -11,6 +11,7 @@ import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
+import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
 import UserProtectedRoute from "../auth/UserProtectedRoute";
 
 const Bookings = () => <div>My Bookings</div>;
@@ -26,9 +27,7 @@ export const userRoutes = (
     <Route
       path={PUBLIC_ROUTES.HOME}
       element={
-        <UserProtectedRoute>
-          <UserLayout />
-        </UserProtectedRoute>
+        <UserLayout />
       }
     >
       {/* Public Routes - Accessible to everyone (guests and logged-in users) */}
@@ -49,6 +48,10 @@ export const userRoutes = (
       <Route
         path={PUBLIC_ROUTES.PACKAGE.replace("/", "")}
         element={<PackagesPage />}
+      />
+      <Route
+        path={PUBLIC_ROUTES.PACKAGE_DETAILS.replace("/", "")}
+        element={<PackageDetails />}
       />
       <Route
         path={PUBLIC_ROUTES.HOTEL_DETAILS.replace("/", "")}

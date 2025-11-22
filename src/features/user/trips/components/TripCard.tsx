@@ -3,18 +3,26 @@ import type { Trip } from "../types/Trip";
 import { Link } from "react-router";
 
 interface TripCardProps {
-  trip: Trip;
+  trip: Trip & {
+    imagesUrls?: string[];
+    egyptianPrice?: number;
+    foreignerPrice?: number;
+    childrenPrice?: number;
+  };
 }
 
 export default function TripCard({ trip }: TripCardProps) {
   const [currentImage, setCurrentImage] = useState(trip.imageCoverUrl);
-  const intervalRef = useRef<number | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const images = [
     trip.imageCoverUrl,
-    ...trip.images.map(
-      (img) => `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`
-    ),
+    ...(trip.imagesUrls && trip.imagesUrls.length > 0
+      ? trip.imagesUrls
+      : trip.images.map(
+        (img) =>
+          `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`
+      )),
   ];
 
   const startCycle = () => {
@@ -32,6 +40,8 @@ export default function TripCard({ trip }: TripCardProps) {
     }
     setCurrentImage(trip.imageCoverUrl);
   };
+
+  const displayPrice = trip.egyptianPrice ?? null;
 
   return (
     <Link to={`/trips/${trip.id}`}>
@@ -56,9 +66,9 @@ export default function TripCard({ trip }: TripCardProps) {
 
           <div className="flex justify-between items-center">
             <p className="overflow-hidden text-ellipsis whitespace-nowrap">
-              {trip.destination} - <span className="italic">Tour</span>
+              {trip.destination.name}
             </p>
-            <p>{trip.price} EGP</p>
+            {displayPrice !== null && <p>{displayPrice} EGP</p>}
           </div>
         </div>
       </div>

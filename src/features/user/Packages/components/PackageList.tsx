@@ -47,7 +47,7 @@ export default function PackageList({
   };
 
   return (
-    <Link to={`/PackageDetails/${id}`}>
+    <Link to={`/Packages/${id}`}>
       <div
         className="block bg-white rounded-xl shadow hover:shadow-lg transition p-3 cursor-pointer"
         onMouseEnter={startCycle}

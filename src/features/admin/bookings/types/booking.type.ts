@@ -4,6 +4,7 @@ export interface Booking {
   id: string;
   bookingNumber: string;
   bookingType: string;
+  item: Item;
   title: string;
   shortDesc: string;
   bookingStatus: string;
@@ -50,4 +51,9 @@ export interface PaginatedBookingsResponse {
 // Single booking response
 export interface BookingResponse {
   data: Booking;
+}
+
+
+export interface Item {
+  title: string;
 }

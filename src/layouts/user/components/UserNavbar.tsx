@@ -1,6 +1,6 @@
 // src/layouts/user/components/UserNavbar.tsx
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation, useNavigate } from "react-router";
+import { Link, useLocation } from "react-router";
 import { X, Plane, User, LogOut, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,14 +13,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
+import AuthModal from "../../../features/user/auth/components/AuthModal";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
-import AuthModal from "../../../features/user/auth/components/AuthModal"; // Add this import
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
-  { name: "About", path: "/about" },
   { name: "Packages", path: "/packages" },
+  { name: "About", path: "/about" },
   { name: "Contact", path: "/contact" },
 ];
 
@@ -30,6 +30,7 @@ export default function UserNavbar() {
   const { user, isAuthenticated, isLoading, logout, openAuthModal, authModal, closeAuthModal } = useAuth(); // Add authModal and closeAuthModal
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({});
 
@@ -122,7 +123,7 @@ export default function UserNavbar() {
     <>
       <nav
         className={cn(
-          "fixed top-0 left-0 w-full z-50 transition-all duration-300 backdrop-blur-md",
+          "fixed top-0 left-0 w-full z-50 transition-all duration-300",
           isTransparent
             ? "bg-transparent border-transparent"
             : "bg-white border-b border-gray-200 shadow-sm"
@@ -134,16 +135,16 @@ export default function UserNavbar() {
             <Plane
               className={cn(
                 "h-6 w-6",
-                isTransparent ? "text-white" : "text-primary"
+                isTransparent ? "text-white" : "text-gray-800"
               )}
             />
             <span
               className={cn(
-                "text-xl font-bold",
+                "text-xl font-extrabold uppercase tracking-widest",
                 isTransparent ? "text-white" : "text-gray-800"
               )}
             >
-              TourEase
+              safarny
             </span>
           </Link>
 
@@ -242,28 +243,26 @@ export default function UserNavbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              // User is not authenticated - show login button
-              <Button 
-                className="cursor-pointer" 
-                size="sm" 
-                onClick={handleLoginClick}
-              >
+              <button className=" bg-[#00B6DE] text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer" onClick={() => setAuthOpen(true)}>
                 Login
-              </Button>
+              </button>
             )}
 
-            {/* Mobile menu button */}
+            {/* Mobile menu toggle with animation */}
             <Button
               ref={toggleRef}
               variant="ghost"
               size="icon"
-              className={cn(
-                "md:hidden cursor-pointer",
-                isTransparent ? "text-white" : "text-gray-600"
-              )}
-              onClick={() => setMobileOpen(!mobileOpen)}
+              className={`md:hidden cursor-pointer ${isTransparent ? "text-white" : "text-gray-800"} ${mobileOpen ? "hidden" : ""}`}
+              onClick={() => setMobileOpen(true)}
             >
-              <Menu className="h-5 w-5" />
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <Menu className="h-6 w-6" />
+              </motion.div>
             </Button>
           </div>
         </div>
@@ -292,7 +291,7 @@ export default function UserNavbar() {
               {/* Close Button - FIXED: changed right-18 to right-4 and text color */}
               <button
                 onClick={() => setMobileOpen(false)}
-                className="absolute top-4 right-4 z-50 p-2 cursor-pointer"
+                className="absolute top-2.5 right-6 z-50 p-2 cursor-pointer"
               >
                 <X className="h-6 w-6 text-white" />
               </button>
@@ -304,7 +303,7 @@ export default function UserNavbar() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -30, opacity: 0 }}
                 transition={{ duration: 0.25 }}
-                className="absolute top-14 left-1/2 -translate-x-1/2 w-[90%] bg-white rounded-xl shadow-xl p-4 flex flex-col space-y-3"
+                className="absolute top-14 left-1/2 -translate-x-1/2 w-[80%] bg-white rounded-xl shadow-xl p-4 flex flex-col space-y-3"
               >
                 {navLinks.map((link) => (
                   <Link
@@ -314,8 +313,8 @@ export default function UserNavbar() {
                     className={cn(
                       "w-full text-center py-3 rounded-lg text-lg font-medium transition-all border",
                       location.pathname === link.path
-                        ? "bg-blue-600 text-white border-blue-600 shadow-md"
-                        : "bg-white text-gray-700 border-gray-200 hover:bg-gray-100"
+                        ? "bg-blue-500 text-white border-blue-500 shadow-md"
+                        : "bg-white text-gray-800 border-0 hover:bg-gray-100"
                     )}
                   >
                     {link.name}

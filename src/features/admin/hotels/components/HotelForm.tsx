@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useForm, type FieldPath } from "react-hook-form";
+import { useForm, Controller, type FieldPath } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,21 @@ import {
 import type { CreateHotelDto, UpdateHotelDto } from "../types/hotel.type";
 import { LocationAutocomplete } from "./LocationAutoComplete";
 import { MapPreview } from "./MapPreview";
+
+/**
+ * HotelForm
+ * - onSubmit receives FormData ready to send to your backend
+ * - defaultValues may contain existing imageCoverUrl (string) and imagesUrls (string[])
+ *
+ * Notes:
+ * - backend expects address as an object; we append address as JSON string under key "address"
+ * - propertyHighlights[] appended as multiple keys "propertyHighlights[]"
+ * - location appended as JSON string under key "location"
+ * - imageCover: either File (new upload) or string (existing public id/url)
+ * - images: mixture of File and string (existing)
+ *
+ * If your Zod schema still requires imageCover/images to be string URLs, update them to accept File | string to avoid client validation errors.
+ */
 
 interface HotelFormProps {
     onSubmit: (fd: FormData) => void;
