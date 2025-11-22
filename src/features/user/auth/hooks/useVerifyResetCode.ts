@@ -1,18 +1,30 @@
+// src/features/user/auth/hooks/useVerifyResetCode.ts
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { authAPI } from "../api/auth.api";
 import type { VerifyResetCodeRequest } from "../types";
+import { useState } from "react";
+import { getFriendlyErrorMessage } from "@/lib/errorUtils";
 
 export function useVerifyResetCode(onSuccessCallback?: () => void) {
-  return useMutation({
+  const [error, setError] = useState<string>('');
+
+  const mutation = useMutation({
     mutationFn: (payload: VerifyResetCodeRequest) => authAPI.verifyResetCode(payload),
     onSuccess: () => {
-      toast.success("Code verified");
+      setError('');
       if (onSuccessCallback) onSuccessCallback();
     },
     onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Invalid reset code";
-      toast.error(message);
+      const friendlyError = getFriendlyErrorMessage(err);
+      setError(friendlyError);
     },
   });
+
+  return {
+    mutate: mutation.mutate,
+    isPending: mutation.isPending,
+    isSuccess: mutation.isSuccess,
+    error,
+    clearError: () => setError(''),
+  };
 }

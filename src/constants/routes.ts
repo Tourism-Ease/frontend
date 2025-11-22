@@ -35,7 +35,7 @@ export const ADMIN_ROUTES = {
   PROFILE: "/admin/profile",
 
   PACKAGE: "/admin/packages",
-  PACKAGE_DETAILS: (id: string = ":id") => `/admin/packages//${id}`,
+  PACKAGE_DETAILS: (id: string = ":id") => `/admin/packages/${id}`,
   ADD_PACKAGE: "/admin/packages/add",
   EDIT_PACKAGE: (id: string = ":id") => `/admin/packages/edit/${id}`,
 

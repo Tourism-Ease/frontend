@@ -1,70 +1,80 @@
-import { useEffect, useRef, useState } from "react";
-import { askFAQ } from "../api/chatbot.api";
+// src/features/chatbot/hooks/useChatbot.ts
+import { useState, useRef, useEffect, useCallback } from 'react';
 
-export type Message = {
-  sender: "user" | "bot";
+interface Message {
   text: string;
-  timestamp: number;
-};
+  sender: 'user' | 'bot';
+}
 
-export const useChatbot = () => {
+export function useChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      sender: "bot",
-      text: "Hello 👋! Ask me anything about booking, trips or services.",
-      timestamp: Date.now(),
-    },
+      text: "Hello! I'm your AI FAQ assistant. How can I help you today?",
+      sender: 'bot'
+    }
   ]);
-
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Smooth scroll
+  // Auto-scroll to bottom when messages change
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const sendMessage = async () => {
+  const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return;
 
-    const question = input.trim();
-
-    // Add user message
-    setMessages((prev) => [
-      ...prev,
-      { sender: "user", text: question, timestamp: Date.now() },
-    ]);
-    setInput("");
+    const userMessage = input.trim();
+    setInput('');
     setIsLoading(true);
 
-    try {
-      const { answer } = await askFAQ(question);
+    // Add user message immediately
+    setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
 
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: answer, timestamp: Date.now() },
-      ]);
-    } catch (e) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          sender: "bot",
-          text: "Something went wrong. Please try again.",
-          timestamp: Date.now(),
+    try {
+      // Call your actual backend API
+      const response = await fetch('http://localhost:5050/api/v1/chatbot', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      ]);
+        body: JSON.stringify({ 
+          message: userMessage,
+          // Add any other required parameters for your backend
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      // Add bot response from backend
+      setMessages(prev => [...prev, { 
+        text: data.response || data.answer || data.message || "I've received your message.",
+        sender: 'bot' 
+      }]);
+    } catch (error) {
+      console.error('Chatbot error:', error);
+      
+      // Add error message
+      setMessages(prev => [...prev, { 
+        text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        sender: 'bot' 
+      }]);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [input, isLoading]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       sendMessage();
     }
-  };
+  }, [sendMessage]);
 
   return {
     messages,
@@ -72,7 +82,7 @@ export const useChatbot = () => {
     setInput,
     sendMessage,
     handleKeyDown,
-    isLoading,
     bottomRef,
+    isLoading
   };
-};
+}

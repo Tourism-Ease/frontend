@@ -1,22 +1,33 @@
+// src/features/user/auth/hooks/useResetPassword.ts
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { authAPI } from "../api/auth.api";
 import type { ResetPasswordRequest } from "../types";
 import { useAuth } from "../../../../hooks/useAuth";
+import { useState } from "react";
+import { getFriendlyErrorMessage } from "@/lib/errorUtils";
 
 export function useResetPassword(onSuccessCallback?: () => void) {
   const { login } = useAuth();
+  const [error, setError] = useState<string>('');
 
-  return useMutation({
+  const mutation = useMutation({
     mutationFn: (payload: ResetPasswordRequest) => authAPI.resetPassword(payload),
     onSuccess: (user) => {
       login(user);
-      toast.success("Password reset and signed in");
+      setError('');
       if (onSuccessCallback) onSuccessCallback();
     },
     onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Failed to reset password";
-      toast.error(message);
+      const friendlyError = getFriendlyErrorMessage(err);
+      setError(friendlyError);
     },
   });
+
+  return {
+    mutate: mutation.mutate,
+    isPending: mutation.isPending,
+    isSuccess: mutation.isSuccess,
+    error,
+    clearError: () => setError(''),
+  };
 }

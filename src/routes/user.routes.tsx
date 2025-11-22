@@ -29,8 +29,9 @@ export const userRoutes = (
       path={PUBLIC_ROUTES.HOME}
       element={
         <NotAdminProtected>
-          <UserLayout />
+        <UserLayout />
         </NotAdminProtected>
+
       }
     >
       {/* Public Routes - Accessible to everyone (guests and logged-in users) */}

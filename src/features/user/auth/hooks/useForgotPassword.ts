@@ -1,17 +1,29 @@
+// src/features/user/auth/hooks/useForgotPassword.ts
 import { useMutation } from "@tanstack/react-query";
-import toast from "react-hot-toast";
 import { authAPI } from "../api/auth.api";
 import type { ForgotPasswordRequest } from "../types";
+import { useState } from "react";
+import { getFriendlyErrorMessage } from "@/lib/errorUtils";
 
 export function useForgotPassword() {
-  return useMutation({
+  const [error, setError] = useState<string>('');
+
+  const mutation = useMutation({
     mutationFn: (payload: ForgotPasswordRequest) => authAPI.forgotPassword(payload),
     onSuccess: () => {
-      toast.success("Reset code sent to your email");
+      setError('');
     },
     onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Failed to send reset code";
-      toast.error(message);
+      const friendlyError = getFriendlyErrorMessage(err);
+      setError(friendlyError);
     },
   });
+
+  return {
+    mutate: mutation.mutate,
+    isPending: mutation.isPending,
+    isSuccess: mutation.isSuccess,
+    error,
+    clearError: () => setError(''),
+  };
 }

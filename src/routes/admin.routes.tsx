@@ -26,6 +26,7 @@ import EditTrip from "@/features/admin/trips/components/EditTrip";
 import BookingsPage from "@/features/admin/bookings/pages/BookingsPage";
 import BookingDetailsPage from "@/features/admin/bookings/pages/BookingDetailsPage";
 import DashboardPage from "@/features/admin/dashboard/pages/DashboardPage";
+import TripDetailsPage from "@/features/admin/trips/pages/TripDetailsPage";
 
 
 // Helper to convert `/admin/trips` → `trips`
@@ -109,6 +110,7 @@ export const adminRoutes = (
       {/* Trips */}
       <Route path={relative(ADMIN_ROUTES.TRIPS)} element={<TripsPage />} />
       <Route path={relative(ADMIN_ROUTES.ADD_TRIP)} element={<AddTrip />} />
+      <Route path={relative(ADMIN_ROUTES.TRIP_DETAILS())} element={<TripDetailsPage />} />
       <Route path={relative(ADMIN_ROUTES.EDIT_TRIP())} element={<EditTrip />} />
 
       {/* Bookings */}
