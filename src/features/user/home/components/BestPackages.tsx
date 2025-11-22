@@ -34,36 +34,38 @@ export default function BestPackages() {
             Discover the world's most breathtaking locations
           </motion.p>
         </div>
+
         <motion.div
           initial={{ opacity: 0, y: 80 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: "easeOut" }}
           viewport={{ once: true, amount: 0.3 }}
-          className="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 justify-items-center"
+          className="px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
         >
           {uniquePackages?.slice(0, 4).map((pack) => (
-            <Link to={`/packages/${pack.id}`}>
-              <div
-                key={pack.id}
-                className="max-w-sm bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition border border-gray-100"
+            <Link key={pack.id} to={`/packages/${pack.id}`}>
+              <motion.div
+                className="flex flex-col bg-white rounded-2xl border border-gray-300 overflow-hidden h-full"
               >
-                <div className="overflow-hidden">
+                {/* Image */}
+                <div className="w-full h-56 overflow-hidden rounded-t-2xl">
                   <img
                     src={pack.imageCoverUrl}
                     alt={pack.title}
-                    className="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
                   />
                 </div>
 
-                <div className="p-5 space-y-3 flex flex-col justify-center">
-                  <h3 className="text-xl font-semibold text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">
+                {/* Text Content */}
+                <div className="flex flex-col justify-between p-5 flex-1">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2 line-clamp-2">
                     {pack.title}
                   </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
+                  <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
                     {pack.shortDesc}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             </Link>
           ))}
         </motion.div>
