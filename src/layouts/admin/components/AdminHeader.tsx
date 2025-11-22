@@ -1,4 +1,3 @@
-// src/layouts/admin/components/AdminHeader.tsx
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,

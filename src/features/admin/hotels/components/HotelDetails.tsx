@@ -62,7 +62,7 @@ export default function HotelDetails() {
             {/* Page Header */}
             <PageHeader
                 title={hotel.name}
-                description={`${hotel.address.city}, ${hotel.address.country}`}
+                description={`${hotel.address.city}, ${hotel.address.country}, ${hotel.address.street ?? ""}`}
                 actions={
                     <div className="flex gap-2">
                         <Link to={`/admin/hotels/edit/${hotel.id}`}>

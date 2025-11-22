@@ -7,8 +7,6 @@ import {
   Hotel,
   Bus,
   Users,
-  FileText,
-  Settings,
   X,
   Ticket,
   Package 
@@ -38,28 +36,21 @@ export function AdminSidebar({
       icon: <Map size={18} />,
     },
     {
-      label: "Transportations",
+      label: 'Transportations',
       to: ADMIN_ROUTES.TRANSPORTATIONS,
       icon: <Bus size={18} />,
     },
+    { label: 'Hotels', to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
+    { label: 'Trips', to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
     { label: "Hotels", to: ADMIN_ROUTES.HOTELS, icon: <Hotel size={18} /> },
     { label: "Trips", to: ADMIN_ROUTES.TRIPS, icon: <Plane size={18} /> },
-    { label: "Users", to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
+    { label: 'Users', to: ADMIN_ROUTES.USERS, icon: <Users size={18} /> },
     {
       label: "Bookings",
       to: ADMIN_ROUTES.BOOKINGS,
       icon: <Ticket size={18} />,
     },
-    {
-      label: "Reports",
-      to: ADMIN_ROUTES.REPORTS,
-      icon: <FileText size={18} />,
-    },
-    {
-      label: "Settings",
-      to: ADMIN_ROUTES.SETTINGS,
-      icon: <Settings size={18} />,
-    },
+
   ];
 
   return (

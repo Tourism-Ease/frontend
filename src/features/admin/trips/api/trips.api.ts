@@ -15,10 +15,21 @@ const RESOURCE = '/trips';
 export const fetchPaginatedTrips = async (
   page = 1,
   limit = 10,
-  keyword?: string
+  keyword?: string,
+  filters?: Record<string, string>
 ) => {
   const params: Record<string, string | number> = { page, limit };
+
   if (keyword) params.keyword = keyword;
+
+  // merge filters as separate query params, e.g. { "filter[destination]": "691..." }
+  if (filters) {
+    Object.entries(filters).forEach(([k, v]) => {
+      if (v !== undefined && v !== null && v !== '') {
+        params[k] = v;
+      }
+    });
+  }
 
   const { data } = await http.get<PaginatedTripsResponse>(RESOURCE, {
     params,
@@ -50,9 +61,7 @@ export const createTrip = async (payload: CreateTripDto | FormData) => {
   const isFormData = payload instanceof FormData;
 
   const { data } = await http.post<TripResponse>(RESOURCE, payload, {
-    headers: isFormData
-      ? { 'Content-Type': 'multipart/form-data' }
-      : undefined,
+    headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : undefined,
   });
 
   return data.data; // trip
@@ -67,15 +76,9 @@ export const updateTrip = async (
 ) => {
   const isFormData = payload instanceof FormData;
 
-  const { data } = await http.put<TripResponse>(
-    `${RESOURCE}/${id}`,
-    payload,
-    {
-      headers: isFormData
-        ? { 'Content-Type': 'multipart/form-data' }
-        : undefined,
-    }
-  );
+  const { data } = await http.patch<TripResponse>(`${RESOURCE}/${id}`, payload, {
+    headers: isFormData ? { 'Content-Type': 'multipart/form-data' } : undefined,
+  });
 
   return data.data; // updated trip
 };
@@ -84,9 +87,7 @@ export const updateTrip = async (
 // DELETE trip
 // ---------------------------------------------------------
 export const deleteTrip = async (id: string) => {
-  const { data } = await http.delete<{ message: string }>(
-    `${RESOURCE}/${id}`
-  );
+  const { data } = await http.delete<{ message: string }>(`${RESOURCE}/${id}`);
 
   return data; // { message: "Deleted successfully" }
 };

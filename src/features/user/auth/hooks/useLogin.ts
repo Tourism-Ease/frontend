@@ -15,8 +15,8 @@ export function useLogin(onSuccess?: () => void) {
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
-    mode: "onChange",
+    defaultValues: { email: '', password: '' },
+    mode: 'onChange',
   });
 
   const loginMutation = useMutation({
@@ -58,21 +58,24 @@ export function useLogin(onSuccess?: () => void) {
       if (onSuccess) onSuccess();
     },
     onError: (err: unknown) => {
-      const message = err instanceof Error ? err.message : "Login failed";
+      const message = err instanceof Error ? err.message : 'Login failed';
       toast.error(message);
-      form.setValue("password", "");
+      form.setValue('password', '');
     },
   });
 
-  const onSubmit = useCallback((values: LoginForm) => {
-    loginMutation.mutate(values);
-  }, [loginMutation]);
+  const onSubmit = useCallback(
+    (values: LoginForm) => {
+      loginMutation.mutate(values);
+    },
+    [loginMutation]
+  );
 
-  return { 
-    form, 
-    onSubmit, 
-    isLoading: loginMutation.isPending, 
+  return {
+    form,
+    onSubmit,
+    isLoading: loginMutation.isPending,
     isSuccess: loginMutation.isSuccess,
-    error: loginMutation.error 
+    error: loginMutation.error,
   };
 }

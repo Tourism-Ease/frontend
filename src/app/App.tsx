@@ -1,4 +1,3 @@
-// src/App.tsx
 import { Spinner } from "@/components/ui/Spinner";
 import AuthModal from "@/features/user/auth/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";

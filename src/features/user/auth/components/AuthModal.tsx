@@ -1,4 +1,3 @@
-// src/features/user/auth/components/AuthModal.tsx
 import { useState } from "react";
 import { X, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { Dialog, DialogContent } from "@radix-ui/react-dialog";

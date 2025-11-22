@@ -20,20 +20,27 @@ interface PaginatedParams {
   page: number;
   limit: number;
   keyword?: string;
+  filters?: Record<string, string>;
 }
 
-// Paginated
 export function usePaginatedTripsQuery({
   page,
   limit,
   keyword,
+  filters, // <- changed param name
 }: PaginatedParams) {
   return useQuery<PaginatedTripsResponse>({
-    queryKey: [...Trips_QK, page, limit, keyword],
-    queryFn: () => fetchPaginatedTrips(page, limit, keyword),
+    queryKey: [
+      ...Trips_QK,
+      page,
+      limit,
+      keyword ?? null,
+      JSON.stringify(filters ?? {}),
+    ],
+    queryFn: () => fetchPaginatedTrips(page, limit, keyword, filters),
     enabled: page > 0 && limit > 0,
     staleTime: 30_000,
-    placeholderData: (prev) => prev,
+    // placeholderData: (prev) => prev, // optional
   });
 }
 
@@ -69,12 +76,13 @@ export function useCreateTripMutation() {
       const optimistic: Trip = {
         id: `temp-${Date.now()}`,
 
-        transportation: payload.transportation, // must exist in CreateTripDto
-
         title: payload.title,
         destination: payload.destination,
 
-        price: payload.price,
+        egyptianPrice: payload.egyptianPrice,
+        foreignerPrice: payload.foreignerPrice,
+        childrenPrice: payload.childrenPrice,
+
         duration: payload.duration,
         pickUp: payload.pickUp,
 

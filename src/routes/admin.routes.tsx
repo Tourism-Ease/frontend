@@ -25,14 +25,15 @@ import PackageDetailsPage from "@/features/admin/packages/pages/PackageDetailsPa
 
 // Placeholder components
 const Dashboard = () => <div>Admin Dashboard</div>;
-const AddTrip = () => <div>Add Trip</div>;
-const EditTrip = () => <div>Edit Trip</div>;
+
+
+const Users = () => <div>Users</div>;
 const Bookings = () => <div>Bookings</div>;
 const Reports = () => <div>Reports</div>;
 const Settings = () => <div>Settings</div>;
 
 // Helper to convert `/admin/trips` → `trips`
-const relative = (path: string) => path.replace(`${ADMIN_ROUTES.ROOT}/`, "");
+const relative = (path: string) => path.replace(`${ADMIN_ROUTES.ROOT}/`, '');
 
 export const adminRoutes = (
   <>
@@ -123,6 +124,7 @@ export const adminRoutes = (
       />
 
       {/* Others */}
+      <Route path={relative(ADMIN_ROUTES.USERS)} element={<Users />} />
       <Route path={relative(ADMIN_ROUTES.BOOKINGS)} element={<Bookings />} />
       <Route path={relative(ADMIN_ROUTES.REPORTS)} element={<Reports />} />
       <Route path={relative(ADMIN_ROUTES.SETTINGS)} element={<Settings />} />

@@ -34,7 +34,7 @@ export async function fetchPaginatedDestinations(
 // GET all destinations (non-paginated)
 export async function fetchDestinations() {
   try {
-    const { data } = await http.get<Destination[]>(RESOURCE);
+    const { data } = await http.get<DestinationResponse[]>(RESOURCE);
     return data;
   } catch (error) {
     console.error('Error fetching destinations:', error);

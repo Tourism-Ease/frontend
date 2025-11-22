@@ -1,4 +1,3 @@
-// src/routes/user.routes.tsx
 /* eslint-disable react-refresh/only-export-components */
 import { Route } from "react-router";
 import { PUBLIC_ROUTES, USER_ROUTES } from "../constants/routes";
@@ -10,9 +9,9 @@ import Trips from "../features/user/trips/pages/Trips";
 import TripDetails from "./../features/user/trips/pages/TripDetails";
 import HotelDetails from "../features/user/Hotel/components/HotelDetails";
 import GoogleCallbackHandler from "./../features/user/auth/components/GoogleCallbackHandler";
+import ProtectedRoute from "./../auth/UserProtected";
 import ProfileDashboard from "../features/user/profile/pages/ProfileDashboard";
 import PackagesPage from "../features/user/Packages/Pages/PackagePage";
-import UserProtectedRoute from "../auth/UserProtectedRoute";
 import NotAdminProtected from "@/auth/NotAdminProtected";
 
 const Bookings = () => <div>My Bookings</div>;

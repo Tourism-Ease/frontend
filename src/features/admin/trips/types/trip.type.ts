@@ -1,21 +1,19 @@
-// --- Transportation inside Trip ---
-export interface TripTransportation {
-  transportationId: string;
-  price: number;
-}
+// --- Pickup type ---
+export type TripPickUp = { time: string; place: string };
 
 // --- Main Trip Model ---
 export interface Trip {
   id: string;
 
-  transportation: TripTransportation;
-
   title: string;
-  destination: string;
+  destination: { id: string; name: string }; // usually an ID string
 
-  price: number;
+  egyptianPrice: number;
+  childrenPrice?: number;
+  foreignerPrice?: number;
+
   duration: string;
-  pickUp: string;
+  pickUp: TripPickUp;
 
   overview: string;
 
@@ -29,8 +27,9 @@ export interface Trip {
   imagesUrls: string[];
 
   createdAt: string;
+  updatedAt?: string;
 
-  _optimistic: true;
+  _optimistic?: boolean;
 }
 
 // --- API: Single Trip Response ---
@@ -38,7 +37,7 @@ export interface TripResponse {
   data: Trip;
 }
 
-// --- Pagination Metadata (same as hotels & transportations) ---
+// --- Pagination Metadata ---
 export interface PaginationMeta {
   currentPage: number;
   limit: number;
@@ -55,18 +54,17 @@ export interface PaginatedTripsResponse {
   data: Trip[];
 }
 
+// --- DTOs for creating/updating trips ---
 export interface CreateTripDto {
-  transportation: {
-    transportationId: string;
-    price: number;
-  };
-
   title: string;
   destination: string;
 
-  price: number;
+  egyptianPrice: number;
+  childrenPrice?: number;
+  foreignerPrice?: number;
+
   duration: string;
-  pickUp: string;
+  pickUp: TripPickUp;
 
   overview: string;
 
@@ -78,17 +76,15 @@ export interface CreateTripDto {
 }
 
 export interface UpdateTripDto {
-  transportation?: {
-    transportationId?: string;
-    price?: number;
-  };
-
   title?: string;
   destination?: string;
 
-  price?: number;
+  egyptianPrice?: number;
+  childrenPrice?: number;
+  foreignerPrice?: number;
+
   duration?: string;
-  pickUp?: string;
+  pickUp?: TripPickUp;
 
   overview?: string;
 
