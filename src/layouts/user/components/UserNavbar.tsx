@@ -1,6 +1,6 @@
 // src/layouts/user/components/UserNavbar.tsx
 import { useState, useEffect, useRef } from "react";
-import { Link, useLocation } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { X, Plane, User, LogOut, Menu } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -13,9 +13,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "../../../lib/utils";
 import { useAuth } from "../../../hooks/useAuth";
-import AuthModal from "../../../features/user/auth/components/AuthModal";
 import { Button } from "@/components/ui/Button";
 import { Spinner } from "@/components/ui/Spinner";
+import AuthModal from "../../../features/user/auth/components/AuthModal";
 
 const navLinks = [
   { name: "Trips", path: "/trips" },
@@ -27,12 +27,22 @@ const navLinks = [
 export default function UserNavbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, isLoading, logout, openAuthModal, authModal, closeAuthModal } = useAuth(); // Add authModal and closeAuthModal
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    logout,
+    openAuthModal,
+    authModal,
+    closeAuthModal,
+  } = useAuth(); // Add authModal and closeAuthModal
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isTransparent, setIsTransparent] = useState(false);
-  const [authOpen, setAuthOpen] = useState(false);
+  // const [authOpen, setAuthOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>({});
+  const [imageLoaded, setImageLoaded] = useState<{ [key: string]: boolean }>(
+    {}
+  );
 
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -97,17 +107,21 @@ export default function UserNavbar() {
   };
 
   const handleImageLoad = (userId: string) => {
-    setImageLoaded(prev => ({ ...prev, [userId]: true }));
+    setImageLoaded((prev) => ({ ...prev, [userId]: true }));
   };
 
   const handleImageError = (userId: string) => {
-    setImageLoaded(prev => ({ ...prev, [userId]: false }));
+    setImageLoaded((prev) => ({ ...prev, [userId]: false }));
   };
 
   // Get user initials for fallback avatar
   const getUserInitials = () => {
     if (!user) return "US";
-    return `${user.firstName?.charAt(0) || ''}${user.lastName?.charAt(0) || ''}`.toUpperCase() || "US";
+    return (
+      `${user.firstName?.charAt(0) || ""}${
+        user.lastName?.charAt(0) || ""
+      }`.toUpperCase() || "US"
+    );
   };
 
   // Get user full name for display
@@ -174,10 +188,12 @@ export default function UserNavbar() {
               // Show loading state while checking auth
               <div className="flex items-center gap-2">
                 <Spinner size="sm" />
-                <span className={cn(
-                  "text-sm",
-                  isTransparent ? "text-white" : "text-gray-600"
-                )}>
+                <span
+                  className={cn(
+                    "text-sm",
+                    isTransparent ? "text-white" : "text-gray-600"
+                  )}
+                >
                   Loading...
                 </span>
               </div>
@@ -185,8 +201,8 @@ export default function UserNavbar() {
               // User is authenticated - show profile dropdown
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
+                  <Button
+                    variant="ghost"
                     className="relative h-10 w-10 rounded-full cursor-pointer p-0 overflow-hidden"
                     disabled={isLoggingOut}
                   >
@@ -226,6 +242,7 @@ export default function UserNavbar() {
                   <DropdownMenuItem asChild>
                     <Link
                       to="/profile"
+                      onClick={handleProfileClick}
                       className="flex items-center gap-2 px-2 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
                     >
                       <User className="h-4 w-4" /> Profile
@@ -237,13 +254,16 @@ export default function UserNavbar() {
                     disabled={isLoggingOut}
                     className="flex items-center gap-2 px-2 py-2 rounded-md text-red-600 hover:bg-red-50 cursor-pointer"
                   >
-                    <LogOut className="h-4 w-4" /> 
+                    <LogOut className="h-4 w-4" />
                     {isLoggingOut ? "Logging out..." : "Logout"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <button className=" bg-[#00B6DE] text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer" onClick={() => setAuthOpen(true)}>
+              <button
+                className=" bg-[#00B6DE] text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 cursor-pointer"
+                onClick={handleLoginClick}
+              >
                 Login
               </button>
             )}
@@ -253,7 +273,9 @@ export default function UserNavbar() {
               ref={toggleRef}
               variant="ghost"
               size="icon"
-              className={`md:hidden cursor-pointer ${isTransparent ? "text-white" : "text-gray-800"} ${mobileOpen ? "hidden" : ""}`}
+              className={`md:hidden cursor-pointer ${
+                isTransparent ? "text-white" : "text-gray-800"
+              } ${mobileOpen ? "hidden" : ""}`}
               onClick={() => setMobileOpen(true)}
             >
               <motion.div
@@ -327,7 +349,10 @@ export default function UserNavbar() {
       </nav>
 
       {/* Top-level Auth Modal - FIXED: using authModal from context instead of local state */}
-      <AuthModal isOpen={authModal.isOpen} setIsOpen={(open) => !open && closeAuthModal()} />
+      <AuthModal
+        isOpen={authModal.isOpen}
+        setIsOpen={(open) => !open && closeAuthModal()}
+      />
     </>
   );
 }

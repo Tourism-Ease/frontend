@@ -1,3 +1,4 @@
+import ScrollToTop from "@/components/ui/ScrollToTop";
 import { Spinner } from "@/components/ui/Spinner";
 import AuthModal from "@/features/user/auth/components/AuthModal";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,6 +20,7 @@ function AppContent() {
 
   return (
     <>
+      <ScrollToTop />
       <Routes>
         {/* User & Public Routes */}
         {userRoutes}
