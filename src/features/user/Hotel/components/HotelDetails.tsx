@@ -42,7 +42,7 @@ export default function HotelDetails() {
   if (!hotel) return <div>No hotel found</div>;
 
   return (
-    <div className="container mx-auto px-4 py-20">
+    <div className="container mx-auto px-4 py-30">
       {/* Basic Info */}
       <h1 className="text-3xl font-bold">{hotel.name}</h1>
       <div className="flex gap-1 items-center mb-4 text-gray-500">

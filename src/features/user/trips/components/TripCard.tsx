@@ -20,9 +20,8 @@ export default function TripCard({ trip }: TripCardProps) {
     ...(trip.imagesUrls && trip.imagesUrls.length > 0
       ? trip.imagesUrls
       : trip.images.map(
-        (img) =>
-          `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`
-      )),
+          (img) => `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`
+        )),
   ];
 
   const startCycle = () => {

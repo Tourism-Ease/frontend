@@ -1,43 +1,47 @@
 interface HotelRatingProps {
   averageRating: number;
 }
+
 export default function HotelRating({ averageRating }: HotelRatingProps) {
+  // Calculate filled and empty stars
+  const fullStars = Math.floor(averageRating);
+  const halfStar = averageRating % 1 >= 0.5 ? 1 : 0;
+  const emptyStars = 5 - fullStars - halfStar;
+
   return (
-    <>
-      <div className="lg:w-1/2 mt-6 sm:w-full border rounded-2xl p-5 flex items-center justify-evenly shadow-sm bg-white">
-        <div className="flex items-center gap-3">
-          <svg
-            viewBox="0 0 32 32"
-            stroke="currentColor"
-            fill="none"
-            strokeWidth="2"
-            className="w-8 h-8 text-black"
-          >
-            <path d="M16 3C12 10 6 10 6 16c0 5 4 8 10 12 6-4 10-7 10-12 0-6-6-6-10-13z" />
-          </svg>
-
-          <div>
-            <p className="font-semibold text-lg">Guest favorite</p>
-            <p className="text-gray-600 text-sm -mt-1">
-              One of the most loved homes on our platform, according to guests
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-5">
-          <div className="text-center">
-            <p className="text-2xl font-semibold">{averageRating}</p>
-
-            <div className="flex gap-1 text-yellow-500 text-sm ">
-              {Array(5)
-                .fill(0)
-                .map((_, i) => (
-                  <span key={i}>★</span>
-                ))}
-            </div>
-          </div>
-        </div>
+    <div className="lg:w-1/2 sm:w-full mt-6 border rounded-2xl p-6 flex flex-col sm:flex-row items-center justify-between shadow-md bg-white">
+      
+      {/* Rating Number */}
+      <div className="text-center sm:text-left">
+        <p className="text-3xl font-extrabold text-gray-900">{averageRating.toFixed(1)}</p>
+        <p className="text-gray-500 text-sm">Average Rating</p>
       </div>
-    </>
+
+      {/* Stars */}
+      <div className="flex items-center mt-3 sm:mt-0 gap-1">
+        {Array(fullStars)
+          .fill(0)
+          .map((_, i) => (
+            <span key={`full-${i}`} className="text-yellow-400 text-xl">★</span>
+          ))}
+        {halfStar === 1 && <span className="text-yellow-400 text-xl">☆</span>}
+        {Array(emptyStars)
+          .fill(0)
+          .map((_, i) => (
+            <span key={`empty-${i}`} className="text-gray-300 text-xl">★</span>
+          ))}
+      </div>
+
+      {/* Optional label */}
+      <div className="mt-3 sm:mt-0 text-sm text-gray-600">
+        {averageRating >= 4.5
+          ? "Excellent"
+          : averageRating >= 4
+          ? "Very Good"
+          : averageRating >= 3
+          ? "Good"
+          : "Average"}
+      </div>
+    </div>
   );
 }

@@ -25,14 +25,6 @@ export default function HotelRooms({ rooms }: HotelRoomsProps) {
               👥 <span className="font-medium">{room.capacity}</span> Guests
             </p>
 
-            {/* Price */}
-            <p className="text-gray-800 font-semibold text-xl mt-3">
-              {room.price}{" "}
-              <span className="text-sm font-normal text-gray-500">
-                EGP / night
-              </span>
-            </p>
-
             {/* Divider */}
             <div className="my-4 border-t" />
 

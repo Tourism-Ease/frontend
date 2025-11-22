@@ -1,44 +1,19 @@
-import heroImg from "@/assets/Hurghada.webp";
+// import heroImg from "@/assets/Hurghada.webp";
 import { motion } from "framer-motion";
+import { useAllPackages } from "../../Packages/hook/useAllPackage";
+import { Link } from "react-router";
 // import { useNavigate } from "react-router";
 
 export default function BestPackages() {
-  // const navigate = useNavigate();
-
-  interface Package {
-    img: string;
-    title: string;
-    desc: string;
-  }
-
-  const packages: Package[] = [
-    {
-      img: heroImg,
-      title: "Luxury Beach Escape",
-      desc: "Enjoy a relaxing vacation at top beach resorts with stunning views.",
-    },
-    {
-      img: heroImg,
-      title: "Adventure Trip",
-      desc: "Explore exciting destinations with adventure-packed itineraries.",
-    },
-    {
-      img: heroImg,
-      title: "Cultural Tour",
-      desc: "Discover local heritage and immerse yourself in unique experiences.",
-    },
-    {
-      img: heroImg,
-      title: "Family Vacation",
-      desc: "Fun-filled trips designed for the whole family to enjoy.",
-    },
-  ];
-
-  // const handleClick = (id: string) => navigate("/");
+  const { data: packages } = useAllPackages();
+  const uniquePackages = packages?.filter(
+    (pack, index, self) => index === self.findIndex((p) => p.id === pack.id)
+  );
+  console.log(packages);
 
   return (
     <>
-      <div className="pt-30">
+      <div className="pt-30 pb-15">
         <div className="text-center mb-10">
           <motion.h2
             initial={{ y: -80, opacity: 0 }}
@@ -66,28 +41,30 @@ export default function BestPackages() {
           viewport={{ once: true, amount: 0.3 }}
           className="p-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 justify-items-center"
         >
-          {packages.map((pack, idx) => (
-            <div
-            // onClick={handleClick}
-              key={idx}
-              className=" max-w-sm bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition border border-gray-100"
-            >
-              <div className="overflow-hidden">
-                <img
-                  src={pack.img}
-                  alt="package preview"
-                  className="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
-                />
+          {uniquePackages?.slice(0, 4).map((pack) => (
+            <Link to={`/packages/${pack.id}`}>
+              <div
+                key={pack.id}
+                className="max-w-sm bg-white rounded-2xl overflow-hidden shadow hover:shadow-lg transition border border-gray-100"
+              >
+                <div className="overflow-hidden">
+                  <img
+                    src={pack.imageCoverUrl}
+                    alt={pack.title}
+                    className="w-full h-56 object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                </div>
+
+                <div className="p-5 space-y-3 flex flex-col justify-center">
+                  <h3 className="text-xl font-semibold text-gray-800 overflow-hidden text-ellipsis whitespace-nowrap">
+                    {pack.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">
+                    {pack.shortDesc}
+                  </p>
+                </div>
               </div>
-              <div className="p-5 space-y-3 flex flex-col justify-center">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {pack.title}
-                </h3>
-                <p className="text-gray-600 text-sm leading-relaxed">
-                  {pack.desc}
-                </p>
-              </div>
-            </div>
+            </Link>
           ))}
         </motion.div>
       </div>

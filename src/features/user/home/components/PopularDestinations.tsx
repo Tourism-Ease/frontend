@@ -14,11 +14,11 @@ export default function PopularDestinations() {
   const destinations: Destination[] = [
     {
       img: sharm,
-      name: "Sharm Elshikh",
+      name: "Sharm Elsheikh",
     },
     {
       img: luxur,
-      name: "Luxur",
+      name: "Luxor",
     },
     {
       img: Hurghda,

@@ -9,6 +9,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/components/ui/carousel";
+import { Link } from "react-router";
 
 export default function Hero() {
   const images: string[] = [hero1, hero2, hero3];
@@ -68,14 +69,18 @@ export default function Hero() {
           viewport={{ once: true, amount: 0.3 }}
           className="mt-8 flex gap-4"
         >
-          <button className="relative overflow-hidden mx-2 px-8 py-3 rounded-2xl text-white border border-white/70 font-medium group backdrop-blur-sm transition">
-            <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 translate-x-0 group-hover:-translate-x-full transition-transform duration-500"></span>
-            <span className="relative z-10">EXPLORE NOW</span>
-          </button>
-          <button className="relative overflow-hidden mx-2 px-8 py-3 rounded-2xl text-white border border-white/70 font-medium group backdrop-blur-sm transition">
-            <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></span>
-            <span className="relative z-10">LEARN MORE</span>
-          </button>
+          <Link to={"/trips"}>
+            <button className="relative  cursor-pointer  overflow-hidden mx-2 px-8 py-3 rounded-2xl text-white border border-white/70 font-medium group backdrop-blur-sm transition">
+              <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 translate-x-0 group-hover:-translate-x-full transition-transform duration-500"></span>
+              <span className="relative z-10">EXPLORE Trips</span>
+            </button>
+          </Link>
+          <Link to={"/packages"}>
+            <button className="relative cursor-pointer overflow-hidden mx-2 px-8 py-3 rounded-2xl text-white border border-white/70 font-medium group backdrop-blur-sm transition">
+              <span className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500 translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-500"></span>
+              <span className="relative z-10">EXPLORE Packages</span>
+            </button>
+          </Link>
         </motion.div>
       </div>
     </section>

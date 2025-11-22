@@ -69,7 +69,7 @@ export const userRoutes = (
         element={<div>Google authentication failed. Please try again.</div>}
       />
 
-      {/* 🔒 Protected User Routes - Only for authenticated non-admin users */}
+      {/* Protected User Routes - Only for authenticated non-admin users */}
       <Route
         path={USER_ROUTES.PROFILE.replace("/", "")}
         element={
