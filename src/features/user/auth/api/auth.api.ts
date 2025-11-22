@@ -79,6 +79,7 @@ export async function logoutApi(): Promise<void> {
 export async function meApi(): Promise<User> {
   try {
     const { data } = await http.get<AuthResponse>("/users/profile");
+    console.log(data);
     return data.data!;
   } catch (err) {
     throw formatError(err);
@@ -152,9 +153,13 @@ export async function checkAuthStatus(): Promise<User | null> {
 }
 
 // ✅ Handle Google OAuth with credential
-export async function googleLoginWithCredential(credential: string): Promise<User> {
+export async function googleLoginWithCredential(
+  credential: string
+): Promise<User> {
   try {
-    const { data } = await http.post<AuthResponse>("/auth/google/callback", { credential });
+    const { data } = await http.post<AuthResponse>("/auth/google/callback", {
+      credential,
+    });
     return data.data!;
   } catch (err) {
     throw formatError(err);
@@ -167,19 +172,27 @@ export async function handleGoogleCallback(): Promise<User> {
     // After Google OAuth redirect, check if user is authenticated
     const user = await meApi();
     return user;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     throw new Error("Google authentication failed");
   }
 }
 
-
 // ✅ Reactivate account
-export async function reactivateAccountApi(payload: ReactivatePayload): Promise<{ user: User; token?: string }> {
+export async function reactivateAccountApi(
+  payload: ReactivatePayload
+): Promise<{ user: User; token?: string }> {
   try {
-    const { data } = await http.post<AuthResponse>("/users/activateAccount", payload);
+    const { data } = await http.post<AuthResponse>(
+      "/users/activateAccount",
+      payload
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return { user: data.data, token: (data as any).token };
+    return {
+      user: data.data ? data.data : ({} as User),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      token: (data as any).token,
+    };
     /**
      * Type 'User | undefined' is not assignable to type 'User'.
   Type 'undefined' is not assignable to type 'User'.ts(2322)

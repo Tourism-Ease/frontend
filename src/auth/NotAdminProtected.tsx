@@ -3,14 +3,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { Spinner } from "@/components/ui/Spinner";
 import { Navigate, useLocation } from "react-router";
 
-interface AdminProtectedRouteProps {
+interface NotAdminProtectedProps {
   children: ReactNode;
 }
 
-export default function AdminProtectedRoute({
+export default function NotAdminProtected({
   children,
-}: AdminProtectedRouteProps) {
-  const { isLoading, isAdmin, isAuthenticated, isAccountActive } = useAuth();
+}: NotAdminProtectedProps) {
+  const { isLoading, isAdmin } = useAuth();
   const location = useLocation();
 
   if (isLoading) {
@@ -21,12 +21,7 @@ export default function AdminProtectedRoute({
     );
   }
 
-  // If not authenticated or not admin, redirect to home
-  if (!isAuthenticated || !isAdmin || !isAccountActive) {
-    return <Navigate to="/" replace state={{ from: location }} />;
-  }
-
-  // Ensure admin stays on admin routes
+  // If user is admin and trying to access non-admin routes, redirect to admin
   if (isAdmin && !location.pathname.startsWith("/admin")) {
     return <Navigate to="/admin" replace />;
   }
