@@ -34,7 +34,7 @@ export function useChatbot() {
     setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
 
     try {
-      const { data } = await http.post("/chatbot", { message: userMessage });
+      const { data } = await http.post("/faq/ask", { message: userMessage });
 
       // Add bot response from backend
       setMessages((prev) => [
