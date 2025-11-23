@@ -1,80 +1,77 @@
 // src/features/chatbot/hooks/useChatbot.ts
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from "react";
+import http from "@/utils/http"; // adjust path if needed
 
 interface Message {
   text: string;
-  sender: 'user' | 'bot';
+  sender: "user" | "bot";
 }
 
 export function useChatbot() {
   const [messages, setMessages] = useState<Message[]>([
     {
       text: "Hello! I'm your AI FAQ assistant. How can I help you today?",
-      sender: 'bot'
-    }
+      sender: "bot",
+    },
   ]);
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const sendMessage = useCallback(async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage = input.trim();
-    setInput('');
+    setInput("");
     setIsLoading(true);
 
     // Add user message immediately
-    setMessages(prev => [...prev, { text: userMessage, sender: 'user' }]);
+    setMessages((prev) => [...prev, { text: userMessage, sender: "user" }]);
 
     try {
-      // Call your actual backend API
-      const response = await fetch('http://localhost:5050/api/v1/chatbot', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          message: userMessage,
-          // Add any other required parameters for your backend
-        }),
-      });
+      const { data } = await http.post("/chatbot", { message: userMessage });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      
       // Add bot response from backend
-      setMessages(prev => [...prev, { 
-        text: data.response || data.answer || data.message || "I've received your message.",
-        sender: 'bot' 
-      }]);
+      setMessages((prev) => [
+        ...prev,
+        {
+          text:
+            data.response ||
+            data.answer ||
+            data.message ||
+            "I've received your message.",
+          sender: "bot",
+        },
+      ]);
     } catch (error) {
-      console.error('Chatbot error:', error);
-      
-      // Add error message
-      setMessages(prev => [...prev, { 
-        text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
-        sender: 'bot' 
-      }]);
+      console.error("Chatbot error:", error);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+          sender: "bot",
+        },
+      ]);
     } finally {
       setIsLoading(false);
     }
   }, [input, isLoading]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  }, [sendMessage]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    },
+    [sendMessage]
+  );
 
   return {
     messages,
@@ -83,6 +80,6 @@ export function useChatbot() {
     sendMessage,
     handleKeyDown,
     bottomRef,
-    isLoading
+    isLoading,
   };
 }
