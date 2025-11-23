@@ -1,6 +1,6 @@
 // src/features/chatbot/hooks/useChatbot.ts
+import http from "@/lib/axios";
 import { useState, useRef, useEffect, useCallback } from "react";
-import http from "@/utils/http"; // adjust path if needed
 
 interface Message {
   text: string;
