@@ -14,8 +14,9 @@ import PackagesPage from "../features/user/Packages/Pages/PackagePage";
 import PackageDetails from "@/features/user/Packages/Pages/PackageDetails";
 import UserProtectedRoute from "../auth/UserProtectedRoute";
 import NotAdminProtected from "@/auth/NotAdminProtected";
+import Bookings from "@/features/user/booking/components/Bookings";
+import PaymentFailedPage from "@/pages/PaymentFailedPage";
 
-const Bookings = () => <div>My Bookings</div>;
 const BookingDetails = () => <div>Booking Details</div>;
 const Payments = () => <div>Payments</div>;
 const Reviews = () => <div>Reviews</div>;
@@ -29,7 +30,7 @@ export const userRoutes = (
       path={PUBLIC_ROUTES.HOME}
       element={
         <NotAdminProtected>
-        <UserLayout />
+          <UserLayout />
         </NotAdminProtected>
 
       }
@@ -68,6 +69,10 @@ export const userRoutes = (
         path="/auth/error"
         element={<div>Google authentication failed. Please try again.</div>}
       />
+
+      {/* Pyament failed */}
+      <Route path={"/payment/fail"} element={<PaymentFailedPage />} />
+
 
       {/* Protected User Routes - Only for authenticated non-admin users */}
       <Route

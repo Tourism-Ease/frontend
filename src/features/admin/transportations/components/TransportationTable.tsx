@@ -28,7 +28,7 @@ import {
     useReactTable,
 } from '@tanstack/react-table';
 import useDebounce from '@/hooks/useDebounce';
-import { Spinner } from '@/components/ui/Spinner';
+import { AdminSpinner, Spinner } from '@/components/ui/Spinner';
 
 export default function TransportationTable() {
     const [page, setPage] = useState(1);
@@ -127,7 +127,7 @@ export default function TransportationTable() {
     if (isLoading) {
         return (
             <PageContainer>
-                <Spinner />
+                <AdminSpinner />
             </PageContainer>
         )
     }

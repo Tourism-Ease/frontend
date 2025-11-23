@@ -1,7 +1,6 @@
-// src/layouts/user/components/UserNavbar.tsx
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { X, Plane, User, LogOut, Menu } from "lucide-react";
+import { X, Plane, User, LogOut, Menu, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
@@ -106,6 +105,10 @@ export default function UserNavbar() {
     navigate("/profile");
   };
 
+  const handleBookingsClick = () => {
+    navigate("/bookings");
+  };
+
   const handleImageLoad = (userId: string) => {
     setImageLoaded((prev) => ({ ...prev, [userId]: true }));
   };
@@ -118,9 +121,8 @@ export default function UserNavbar() {
   const getUserInitials = () => {
     if (!user) return "US";
     return (
-      `${user.firstName?.charAt(0) || ""}${
-        user.lastName?.charAt(0) || ""
-      }`.toUpperCase() || "US"
+      `${user.firstName?.charAt(0) || ""}${user.lastName?.charAt(0) || ""
+        }`.toUpperCase() || "US"
     );
   };
 
@@ -173,8 +175,8 @@ export default function UserNavbar() {
                   location.pathname === link.path
                     ? "bg-[#00B6DE] text-white shadow-sm"
                     : isTransparent
-                    ? "text-white hover:bg-white/10"
-                    : "text-gray-700 hover:bg-gray-100"
+                      ? "text-white hover:bg-white/10"
+                      : "text-gray-700 hover:bg-gray-100"
                 )}
               >
                 {link.name}
@@ -249,6 +251,16 @@ export default function UserNavbar() {
                     </Link>
                   </DropdownMenuItem>
 
+                  <DropdownMenuItem asChild>
+                    <Link
+                      to="/bookings"
+                      onClick={handleBookingsClick}
+                      className="flex items-center gap-2 px-2 py-2 rounded-md text-gray-700 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <Calendar className="h-4 w-4" />My Bookings
+                    </Link>
+                  </DropdownMenuItem>
+
                   <DropdownMenuItem
                     onClick={handleLogout}
                     disabled={isLoggingOut}
@@ -273,9 +285,8 @@ export default function UserNavbar() {
               ref={toggleRef}
               variant="ghost"
               size="icon"
-              className={`md:hidden cursor-pointer ${
-                isTransparent ? "text-white" : "text-gray-800"
-              } ${mobileOpen ? "hidden" : ""}`}
+              className={`md:hidden cursor-pointer ${isTransparent ? "text-white" : "text-gray-800"
+                } ${mobileOpen ? "hidden" : ""}`}
               onClick={() => setMobileOpen(true)}
             >
               <motion.div

@@ -10,7 +10,7 @@ import {
     useHotelByIdQuery,
 } from '../hooks/useHotels';
 import type { UpdateHotelDto } from '../types/hotel.type';
-import { Spinner } from '@/components/ui/Spinner';
+import { AdminSpinner, Spinner } from '@/components/ui/Spinner';
 
 export default function EditHotel() {
     const { id } = useParams();
@@ -35,7 +35,7 @@ export default function EditHotel() {
     if (isLoading || !hotel) {
         return (
             <PageContainer>
-                <Spinner />
+                <AdminSpinner />
             </PageContainer>
         );
     }

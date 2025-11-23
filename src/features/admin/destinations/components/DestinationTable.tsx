@@ -29,7 +29,7 @@ import {
 import type { Destination } from '../types/destination.type';
 import { DeleteConfirmationDialog } from '@/components/admin/DeleteConfirmationDialog';
 import useDebounce from '@/hooks/useDebounce';
-import { Spinner } from '@/components/ui/Spinner';
+import { AdminSpinner, Spinner } from '@/components/ui/Spinner';
 
 export default function DestinationTable() {
   const [page, setPage] = useState(1);
@@ -132,7 +132,7 @@ export default function DestinationTable() {
   if (isLoading) {
     return (
       <PageContainer>
-        <Spinner />
+        <AdminSpinner />
       </PageContainer>
     )
   }

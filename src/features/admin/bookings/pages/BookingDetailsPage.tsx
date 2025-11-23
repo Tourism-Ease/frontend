@@ -8,13 +8,13 @@ import {
   CreditCard,
   RefreshCw,
 } from "lucide-react";
-import { Spinner } from "@/components/ui/Spinner";
+import { AdminSpinner } from "@/components/ui/Spinner";
 
 export default function BookingDetailsPage() {
   const { id } = useParams();
   const { data: booking, isLoading } = useBookingByIdQuery(id!);
 
-  if (isLoading) return <PageContainer><Spinner /></PageContainer>;
+  if (isLoading) return <PageContainer><AdminSpinner /></PageContainer>;
   if (!booking) return <PageContainer>No booking found.</PageContainer>;
 
   const renderStatusBadge = (status: string) => {

@@ -1,8 +1,9 @@
 import { FaExclamationTriangle } from "react-icons/fa";
 import { Spinner } from "../../../../components/ui/Spinner";
-import PackageList from "../components/PackageList";
+import PackageList from "../components/PackageCard";
 import { useAllPackages } from "../hook/useAllPackage";
 import type { PackageType } from "../types/Package";
+import PackageCard from "../components/PackageCard";
 
 export default function PackagesPage() {
   const { data: packages, isLoading, isError, error } = useAllPackages();
@@ -40,7 +41,7 @@ export default function PackagesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 text-center">
             {packages?.map((pkg: PackageType) => (
-              <PackageList
+              <PackageCard
                 key={pkg.id}
                 id={pkg.id}
                 title={pkg.title}
@@ -48,6 +49,7 @@ export default function PackagesPage() {
                 durationDays={pkg.durationDays}
                 imageCoverUrl={pkg.imageCoverUrl}
                 images={pkg.images}
+                availableSeats={pkg.availableSeats}
               />
             ))}
           </div>

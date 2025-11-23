@@ -25,7 +25,7 @@ import http from "@/lib/axios";
 import { toast } from "sonner";
 import type { Booking } from "../types/booking.type";
 import { CheckCircle, Trash2 } from "lucide-react";
-import { Spinner } from "@/components/ui/Spinner";
+import { AdminSpinner, Spinner } from "@/components/ui/Spinner";
 
 export default function BookingTable() {
   const [page, setPage] = useState(1);
@@ -185,7 +185,7 @@ export default function BookingTable() {
 
           <div className="overflow-x-auto rounded-xl border shadow-sm">
             {isLoading ? (
-              <Spinner />
+              <AdminSpinner />
             ) : (
               <Table>
                 <TableHeader>

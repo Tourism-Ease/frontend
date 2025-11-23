@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { useState, useRef } from "react";
+import { FaUsers } from "react-icons/fa";
 
 interface PackageProps {
   id: string;
@@ -8,18 +9,20 @@ interface PackageProps {
   durationDays: number;
   imageCoverUrl: string;
   images?: string[];
+  availableSeats: number;
 }
 
-export default function PackageList({
+export default function PackageCard({
   id,
   title,
   shortDesc,
   durationDays,
   imageCoverUrl,
   images = [],
+  availableSeats,
 }: PackageProps) {
-  const [currentImage, setCurrentImage] = useState(imageCoverUrl);
-  const intervalRef = useRef<number | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const allImages = [
     imageCoverUrl,
@@ -31,11 +34,9 @@ export default function PackageList({
   const startCycle = () => {
     if (allImages.length <= 1) return;
 
-    let index = 1;
-    intervalRef.current = window.setInterval(() => {
-      setCurrentImage(allImages[index]);
-      index = (index + 1) % allImages.length;
-    }, 1000);
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % allImages.length);
+    }, 1200);
   };
 
   const stopCycle = () => {
@@ -43,7 +44,7 @@ export default function PackageList({
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    setCurrentImage(imageCoverUrl);
+    setCurrentIndex(0);
   };
 
   return (
@@ -53,12 +54,19 @@ export default function PackageList({
         onMouseEnter={startCycle}
         onMouseLeave={stopCycle}
       >
-        <div className="relative h-48 w-full">
-          <img
-            src={currentImage}
-            className="h-full w-full object-cover rounded-lg transition-all duration-300"
-            alt={title}
-          />
+        <div className="relative h-48 w-full overflow-hidden rounded-lg">
+          {allImages.map((img, idx) => (
+            <img
+              key={idx}
+              src={img}
+              alt={title}
+              className={`
+                absolute inset-0 h-full w-full object-cover rounded-lg
+                transition-opacity duration-700
+                ${idx === currentIndex ? "opacity-100" : "opacity-0"}
+              `}
+            />
+          ))}
 
           <span className="absolute bottom-2 right-2 bg-black/60 text-white px-2 py-1 rounded-md text-xs">
             {durationDays} Days
@@ -70,7 +78,15 @@ export default function PackageList({
             {title}
           </h2>
 
-          <p className="text-gray-600 text-sm mt-2 line-clamp-2">{shortDesc}</p>
+          {/* Seats with icon */}
+          <span className="inline-flex items-center gap-1 mt-1 bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-md">
+            <FaUsers className="text-blue-700 text-sm" />
+            {availableSeats} Seats
+          </span>
+
+          <p className="text-gray-600 text-sm mt-2 line-clamp-2">
+            {shortDesc}
+          </p>
         </div>
       </div>
     </Link>

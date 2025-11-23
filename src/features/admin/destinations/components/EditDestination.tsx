@@ -10,7 +10,7 @@ import {
   useDestinationByIdQuery,
 } from '../hooks/useDestinations';
 import type { UpdateDestinationDto } from '../types/destination.type';
-import { Spinner } from '@/components/ui/Spinner';
+import { AdminSpinner, Spinner } from '@/components/ui/Spinner';
 
 export default function EditDestination() {
   const { id } = useParams();
@@ -35,7 +35,7 @@ export default function EditDestination() {
   if (isLoading || !destination) {
     return (
       <PageContainer>
-        <Spinner />
+        <AdminSpinner />
       </PageContainer>
     );
   }

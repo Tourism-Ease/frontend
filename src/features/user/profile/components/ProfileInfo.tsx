@@ -1,252 +1,75 @@
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
-import { FaTrash, FaPen } from "react-icons/fa";
-import {
-  useDeactivateAccount,
-  useProfile,
-  useUpdateProfile,
-} from "../hooks/useProfile";
-import type { UpdateProfileInput, UserProfile } from "../types";
-import ChangePasswordModal from "./ChangePasswordModal";
-import DeactivateAccountModal from "./DeactivateAccountModal";
+import { formatCurrency } from "@/utils/formatCurrency";
+import http from "@/lib/axios";
+import { Button } from "@/components/ui/button";
+import toast from "react-hot-toast";
 
-import { Button } from "../../../../components/ui/Button";
-import { Input } from "../../../../components/ui/input";
-import { Label } from "../../../../components/ui/label";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "../../../../components/ui/avatar";
+interface BookingItem {
+  _id: string;
+  bookingNumber?: string;
+  bookingType?: string;
+  bookingStatus?: string;
+  paymentStatus?: string;
+  totalPrice?: number;
+  item?: {
+    title?: string;
+    imageCoverUrl?: string;
+    duration?: string;
+  };
+  bookingDate?: string;
+  people?: { adults?: number; children?: number; infants?: number; foreigners?: number };
+}
 
-export default function ProfileInfo() {
-  const { data: user } = useProfile();
-  const updateProfile = useUpdateProfile();
-  const { mutate: deactivateAccount } = useDeactivateAccount();
+export default function Bookings() {
+  const [bookings, setBookings] = useState<BookingItem[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const [editMode, setEditMode] = useState(false);
-  const [openPasswordModal, setOpenPasswordModal] = useState(false);
-  const [openDeactivateModal, setOpenDeactivateModal] = useState(false);
-
-  const [form, setForm] = useState<UpdateProfileInput>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    avatar: null,
-  });
-
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const fetchBookings = async () => {
+    try {
+      setLoading(true);
+      const res = await http.get("/bookings");
+      setBookings(res.data?.data || []);
+    } catch (err) {
+      toast.error("Failed to fetch bookings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user) return;
-    setForm({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      phone: user.phone || "",
-      avatar: null,
-    });
-    setImagePreview(null);
-  }, [user]);
+    fetchBookings();
+  }, []);
 
-  const autoSave = (newData: Partial<UpdateProfileInput>) => {
-    updateProfile.mutate(newData, {
-      onSuccess: () => toast.success("Profile updated"),
-      onError: (err: Error) => toast.error(err.message),
-    });
-  };
-
-  const handleFieldChange =
-    (field: keyof UpdateProfileInput) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    };
-
-  const handleFieldBlur = (field: keyof UpdateProfileInput) => () => {
-    autoSave({ [field]: form[field] });
-  };
-
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] || null;
-    if (!file) return;
-
-    const allowed = ["image/jpeg", "image/png", "image/jpg"];
-    if (!allowed.includes(file.type)) {
-      toast.error("Only JPG or PNG images allowed");
-      return;
+  const handleCancel = async (id: string) => {
+    if (!confirm("Are you sure you want to cancel this booking?")) return;
+    try {
+      await http.patch(`/bookings/${id}/cancel`);
+      toast.success("Booking cancelled successfully");
+      fetchBookings();
+    } catch (err) {
+      toast.error("Failed to cancel booking");
     }
-
-    const reader = new FileReader();
-    reader.onload = (ev) => setImagePreview(ev.target?.result as string);
-    reader.readAsDataURL(file);
-
-    setForm((prev) => ({ ...prev, avatar: file }));
-    toast.info("Uploading image…");
-
-    updateProfile.mutate(
-      { avatar: file },
-      {
-        onSuccess: () => toast.success("Profile picture updated!"),
-        onError: (err) => toast.error(err.message),
-      }
-    );
   };
 
-  const handleRemoveAvatar = () => {
-    setImagePreview(null);
-    toast.info("Removing picture…");
+  if (loading) return <p className="text-center py-10 text-gray-700">Loading bookings...</p>;
+  if (!bookings.length) return <p className="text-center py-10 text-gray-700">You have no bookings yet.</p>;
 
-    updateProfile.mutate(
-      { avatar: null },
-      {
-        onSuccess: () => toast.success("Profile picture removed"),
-        onError: (err) => toast.error(err.message),
-      }
-    );
-  };
-
-  const getInitials = (u: UserProfile) =>
-    `${u.firstName.charAt(0)}${u.lastName.charAt(0)}`.toUpperCase();
-
-  const toggleEdit = () => {
-    if (editMode) toast.success("Changes saved");
-    else toast.info("You can now edit your profile");
-    setEditMode(!editMode);
-  };
-
-  if (!user) return null;
-
-  return (
-    <div className="space-y-2 mt-14 max-w-3xl mx-auto">
-      {/* Avatar Section */}
-      <div className="p-6 rounded-xl border bg-white shadow-sm">
-        <h2 className="text-lg font-semibold mb-4">Profile Picture</h2>
-        <div className="flex flex-col items-center space-y-4">
-          <Avatar className="w-32 h-32 shadow border cursor-pointer">
-            <AvatarImage src={imagePreview || user.avatarUrl || undefined} />
-            <AvatarFallback>{getInitials(user)}</AvatarFallback>
-          </Avatar>
-
-          {editMode && (
-            <>
-              <input
-                id="profile-image"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                className="hidden cursor-pointer"
-              />
-              <div className="flex gap-4">
-                <button
-                  onClick={() =>
-                    document.getElementById("profile-image")?.click()
-                  }
-                  className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition cursor-pointer"
-                >
-                  <FaPen /> Edit
-                </button>
-
-                {(imagePreview || user.avatarUrl) && (
-                  <button
-                    onClick={handleRemoveAvatar}
-                    className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition cursor-pointer"
-                  >
-                    <FaTrash /> Delete
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* Profile Form */}
-      <div className="p-6 rounded-xl border bg-white shadow-sm space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Profile Information</h2>
-          <Button onClick={toggleEdit} className="cursor-pointer">
-            {editMode ? "Save Changes" : "Edit Profile"}
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <Label>First Name</Label>
-            <Input
-              disabled={!editMode}
-              value={form.firstName}
-              onChange={handleFieldChange("firstName")}
-              onBlur={handleFieldBlur("firstName")}
-              className="cursor-text"
-            />
-          </div>
-
-          <div>
-            <Label>Last Name</Label>
-            <Input
-              disabled={!editMode}
-              value={form.lastName}
-              onChange={handleFieldChange("lastName")}
-              onBlur={handleFieldBlur("lastName")}
-              className="cursor-text"
-            />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label>Email</Label>
-            <Input disabled value={form.email} className="bg-gray-100 cursor-not-allowed" />
-          </div>
-
-          <div className="md:col-span-2">
-            <Label>Phone</Label>
-            <Input
-              disabled={!editMode}
-              value={form.phone}
-              onChange={handleFieldChange("phone")}
-              onBlur={handleFieldBlur("phone")}
-              className="cursor-text"
-            />
-          </div>
-        </div>
-
-        <Button
-          variant="outline"
-          onClick={() => setOpenPasswordModal(true)}
-          className="cursor-pointer"
-        >
-          Change Password
-        </Button>
-      </div>
-
-      {/* Modals */}
-      <ChangePasswordModal
-        open={openPasswordModal}
-        onOpenChange={setOpenPasswordModal}
-      />
-
-      {/* Danger Zone */}
-      <div className="p-6 rounded-xl border bg-red-50 shadow-sm space-y-4">
-        <h2 className="text-lg font-semibold text-red-700">Danger Zone</h2>
-        <p className="text-red-600">
-          Be careful with these actions. They cannot be undone easily.
-        </p>
-        <div className="flex flex-col md:flex-row gap-4 text-white">
+  return (<div className="max-w-5xl mx-auto p-6 grid gap-6">
+    {bookings.map((b) => (<div key={b._id} className="flex flex-col md:flex-row border rounded-xl overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 bg-white">
+      <img
+        src={b.item?.imageCoverUrl ?? "/placeholder.jpg"}
+        alt={b.item?.title ?? "Booking"}
+        className="w-full md:w-40 h-40 object-cover md:rounded-l-xl"
+      /> <div className="flex-1 p-4 flex flex-col justify-between"> <div className="space-y-1"> <h3 className="font-bold text-lg">{b.item?.title ?? "Untitled Booking"}</h3> <p className="text-sm text-gray-600">Booking #: {b.bookingNumber ?? "-"}</p> <p className="text-sm text-gray-600">Date: {b.bookingDate ? new Date(b.bookingDate).toLocaleDateString() : "-"}</p> <p className="text-sm text-gray-600">People: {b.people?.adults ?? 0} adults, {b.people?.children ?? 0} children, {b.people?.infants ?? 0} infants, {b.people?.foreigners ?? 0} foreigners</p> <p className="text-sm font-semibold">Total: {formatCurrency(b.totalPrice ?? 0)}</p>
+        <p className={`text-sm font-medium ${b.bookingStatus === "cancelled" ? "text-red-600" : "text-green-600"}`}>Status: {b.bookingStatus ?? "Unknown"}</p> </div>
+        {b.bookingStatus !== "cancelled" && (<div className="mt-3 flex justify-end">
           <Button
             variant="destructive"
-            onClick={() => setOpenDeactivateModal(true)}
-            className="cursor-pointer"
+            size="sm"
+            onClick={() => handleCancel(b._id)}
           >
-            Deactivate Account
-          </Button>
-        </div>
-      </div>
-
-      <DeactivateAccountModal
-        open={openDeactivateModal}
-        onOpenChange={setOpenDeactivateModal}
-        onConfirm={() => deactivateAccount()}
-      />
-    </div>
+            Cancel Booking </Button> </div>
+        )} </div> </div>
+    ))} </div>
   );
 }

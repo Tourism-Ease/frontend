@@ -5,7 +5,6 @@ interface TripWhatToBringProps {
 export default function TripWhatToBring({ items }: TripWhatToBringProps) {
     return (
         <div>
-            <h2 className="text-2xl font-semibold mb-3 text-gray-900">What to Bring</h2>
             {items.length ? (
                 <div className="flex flex-wrap gap-2">
                     {items.map((w, idx) => (

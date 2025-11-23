@@ -21,7 +21,7 @@ import {
   Package as PackageIcon
 } from 'lucide-react';
 import type { JSX } from 'react';
-import { Spinner } from '@/components/ui/Spinner';
+import { AdminSpinner } from '@/components/ui/Spinner';
 
 export default function Dashboard() {
   const { data, isLoading, isError, error } = useDashboardQuery();
@@ -34,7 +34,7 @@ export default function Dashboard() {
   if (isLoading || !data) {
     return (
       <PageContainer>
-        <Spinner />
+        <AdminSpinner />
       </PageContainer>
     );
   }

@@ -11,6 +11,7 @@ import TripWhatToBring from "../components/TripWhatToBring";
 import { useState, useEffect } from "react";
 import BookingModal from "../../booking/components/BookingModal";
 import { FaExclamationTriangle, FaClock, FaInfoCircle, FaStar, FaShoppingBag, FaBook } from "react-icons/fa";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 export default function TripDetails() {
   const { id } = useParams<{ id: string }>();
@@ -71,14 +72,31 @@ export default function TripDetails() {
       </div>
 
       <TripGallery cover={cover} images={images} />
-
-      {/* Trip Info */}
-      <div className="bg-white p-6 rounded-xl flex md:flex-row md:space-x-6">
-        <div className="flex items-center gap-2">
-          <FaClock className="text-cyan-500" />
+      {/* Trip Info + Prices */}
+      <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100 flex flex-col gap-4">
+        {/* Duration & Pickup */}
+        <div className="flex items-center gap-3">
+          <FaClock className="text-cyan-500 text-base" />
           <TripInfo duration={trip.duration} pickUp={trip.pickUp} />
         </div>
+
+
+        {/* Prices */}
+        <div className="flex flex-wrap gap-2">
+          <span className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 rounded-full font-medium border border-blue-200 shadow-sm text-sm">
+            Egyptian: {formatCurrency(trip.egyptianPrice)}
+          </span>
+          <span className="flex items-center gap-1 px-3 py-1 bg-green-50 text-green-700 rounded-full font-medium border border-green-200 shadow-sm text-sm">
+            Children: {formatCurrency(trip.childrenPrice)}
+          </span>
+          <span className="flex items-center gap-1 px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full font-medium border border-yellow-200 shadow-sm text-sm">
+            Foreigner: {formatCurrency(trip.foreignerPrice)}
+          </span>
+        </div>
       </div>
+
+
+
 
       {/* Overview */}
       <div className="bg-white p-6 rounded-xl shadow-md border border-gray-100">

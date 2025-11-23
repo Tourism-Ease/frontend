@@ -5,7 +5,6 @@ interface TripHighlightsProps {
 export default function TripHighlights({ highlights }: TripHighlightsProps) {
     return (
         <div className="mb-8">
-            <h2 className="text-2xl font-semibold mb-3 text-gray-900">Highlights</h2>
             {highlights.length ? (
                 <div className="flex flex-wrap gap-2">
                     {highlights.map((h, idx) => (

@@ -1,35 +1,32 @@
 import { useState, useRef } from "react";
 import type { Trip } from "../types/Trip";
 import { Link } from "react-router";
+import { formatCurrency } from "@/utils/formatCurrency";
+import { Badge } from "@/components/ui/badge";
 
 interface TripCardProps {
   trip: Trip & {
     imagesUrls?: string[];
     egyptianPrice?: number;
-    foreignerPrice?: number;
-    childrenPrice?: number;
   };
 }
 
 export default function TripCard({ trip }: TripCardProps) {
-  const [currentImage, setCurrentImage] = useState(trip.imageCoverUrl);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const images = [
     trip.imageCoverUrl,
     ...(trip.imagesUrls && trip.imagesUrls.length > 0
       ? trip.imagesUrls
-      : trip.images.map(
-          (img) => `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`
-        )),
+      : trip.images.map((img) => `https://res.cloudinary.com/dgpxrx8cp/image/upload/v1/${img}`)),
   ];
 
   const startCycle = () => {
-    let index = 1;
+    if (images.length <= 1) return;
     intervalRef.current = setInterval(() => {
-      setCurrentImage(images[index]);
-      index = (index + 1) % images.length;
-    }, 1000);
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, 1500); // slower cycle for smoother feel
   };
 
   const stopCycle = () => {
@@ -37,40 +34,46 @@ export default function TripCard({ trip }: TripCardProps) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-    setCurrentImage(trip.imageCoverUrl);
+    setCurrentIndex(0);
   };
 
   const displayPrice = trip.egyptianPrice ?? null;
+  const overviewLimit = 100;
 
   return (
-    <Link to={`/trips/${trip.id}`}>
-      <div
-        className="block max-w-sm rounded-lg overflow-hidden cursor-pointer"
-        onMouseEnter={startCycle}
-        onMouseLeave={stopCycle}
-      >
-        <img
-          className="rounded-lg h-48 w-full object-cover transition-all duration-300"
-          src={currentImage}
-          alt={trip.title}
-        />
+    <Link to={`/trips/${trip.id}`}> <div
+      className="max-w-sm bg-white shadow-lg rounded-lg overflow-hidden cursor-pointer hover:shadow-xl transition-shadow duration-300"
+      onMouseEnter={startCycle}
+      onMouseLeave={stopCycle}
+    > <div className="relative h-48 w-full">
+        {images.map((img, idx) => (
+          <img
+            key={idx}
+            src={img}
+            alt={trip.title}
+            className={`absolute inset-0 h-full w-full object-cover rounded-t-lg transition-opacity duration-700 ${idx === currentIndex ? "opacity-100" : "opacity-0"
+              }`}
+          />
+        ))}
+        {displayPrice !== null && (<Badge
+          variant="secondary"
+          className="absolute top-2 right-2 bg-black/50 text-white px-2 py-1 text-xs"
+        >
+          Starts from {formatCurrency(displayPrice)} </Badge>
+        )} </div>
 
-        <div className="p-2 text-center">
-          <h5
-            className="text-xl font-semibold pb-2 overflow-hidden text-ellipsis whitespace-nowrap"
-            title={trip.title}
-          >
-            {trip.title}
-          </h5>
 
-          <div className="flex justify-between items-center">
-            <p className="overflow-hidden text-ellipsis whitespace-nowrap">
-              {trip.destination.name}
-            </p>
-            {displayPrice !== null && <p>{displayPrice} EGP</p>}
-          </div>
-        </div>
+      <div className="p-4">
+        <p className="text-gray-600 text-sm font-bold mb-1">{trip.destination.name}</p>
+        <p className="text-gray-700 text-sm">
+          {trip.overview.length > overviewLimit
+            ? trip.overview.slice(0, overviewLimit) + "..."
+            : trip.overview}
+        </p>
       </div>
+    </div>
     </Link>
+
+
   );
 }
